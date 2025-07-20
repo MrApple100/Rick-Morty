@@ -1,7 +1,9 @@
 package ru.mrapple100.core.character.repository
 
 import ru.mrapple100.core.character.datasource.CharacterMemoryDataSource
+import ru.mrapple100.core.character.datasource.local.CharacterLocalDataSource
 import ru.mrapple100.core.character.datasource.remote.CharacterRemoteDataSource
+import ru.mrapple100.core.character.mapToCharacterEntities
 import ru.mrapple100.core.character.mapToCharacterModels
 import ru.mrapple100.domain.character.model.CharacterModel
 import ru.mrapple100.domain.character.repository.CharacterRepository
@@ -9,14 +11,18 @@ import javax.inject.Inject
 
 internal class CharacterRepositoryImpl @Inject constructor(
     private val characterRemoteDataSource: CharacterRemoteDataSource,
-    private val characterMemoryDataSource: CharacterMemoryDataSource,
+//    private val characterMemoryDataSource: CharacterMemoryDataSource,
+    private val characterLocalDataSource: CharacterLocalDataSource
 ) : CharacterRepository {
 
 
     override suspend fun getCharacters(from: Int, to: Int): List<CharacterModel> {
-        val arrayFromTo = Array(to-from) { index -> index + from }
-        val range:String = arrayFromTo.joinToString(separator = ",")
-        return characterRemoteDataSource.getCharacters(range).mapToCharacterModels()
+        return characterRemoteDataSource.getCharacters(from,to).mapToCharacterModels()
+    }
+
+    override suspend fun setLocalCharacters(characterModels: List<CharacterModel>){
+        val characterEntities = characterModels.mapToCharacterEntities()
+        characterLocalDataSource.insertCharacters(characterEntities)
     }
 
 

@@ -1,12 +1,11 @@
 package ru.mrapple100.core.character.response
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-internal typealias CharacterResponseList = List<CharacterResponseModel>
+internal typealias CharacterResponseList = List<CharacterResponse>
 @Serializable
-data class CharacterResponseModel(
+data class CharacterResponse(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
     @SerialName("status") val status: Status,

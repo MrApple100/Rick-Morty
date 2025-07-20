@@ -9,6 +9,6 @@ class ListConverter{
     fun convertListToJSONString(invoiceList: List<String>): String = Gson().toJson(invoiceList)
     @TypeConverter
     fun convertJSONStringToList(jsonString: String): List<String> = Gson().fromJson(jsonString,
-        TypeToken<List<String>>().type)
+        object : TypeToken<List<String>>() {}.type)
 
 }
