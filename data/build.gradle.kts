@@ -52,6 +52,11 @@ dependencies {
     implementation (libs.com.squareup.retrofit2.retrofit)
     implementation (libs.converter.gson)
 
+    // Room
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

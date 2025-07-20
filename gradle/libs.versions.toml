@@ -10,10 +10,14 @@ espressoCore = "3.6.1"
 appcompat = "1.7.1"
 kotlinxSerializationJson = "1.9.0"
 material = "1.12.0"
+roomRuntime = "2.7.2"
 squareupRetrofitVersion = "2.8.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 com-squareup-retrofit2-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "squareupRetrofitVersion" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 hilt-android = {group = "com.google.dagger", name = "hilt-android", version.ref = "hiltAndroid" }
