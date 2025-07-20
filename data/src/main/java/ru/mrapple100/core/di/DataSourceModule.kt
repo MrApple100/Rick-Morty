@@ -12,6 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.mrapple100.core.character.datasource.local.AppDatabase
 import ru.mrapple100.core.character.datasource.local.CharacterLocalDataSource
 import ru.mrapple100.core.character.datasource.local.dao.CharacterDao
+import ru.mrapple100.core.character.datasource.local.dao.ImageDao
 import ru.mrapple100.core.character.datasource.remote.CharacterRemoteDataSource
 import ru.mrapple100.core.character.datasource.remote.service.CharacterService
 import javax.inject.Singleton
@@ -44,6 +45,11 @@ class DataSourceModule {
     @Provides
     internal fun providesCharacterDao(appDatabase: AppDatabase):CharacterDao{
         return appDatabase.characterDao()
+    }
+    @Singleton
+    @Provides
+    internal fun providesImageDao(appDatabase: AppDatabase): ImageDao {
+        return appDatabase.imageDao()
     }
 
     @Singleton

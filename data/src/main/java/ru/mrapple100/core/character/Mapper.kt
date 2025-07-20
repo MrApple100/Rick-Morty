@@ -2,6 +2,7 @@ package ru.mrapple100.core.character
 
 import android.graphics.Bitmap
 import ru.mrapple100.core.character.datasource.local.entity.CharacterEntity
+import ru.mrapple100.core.character.datasource.local.entity.ImageEntity
 import ru.mrapple100.core.character.response.CharacterResponse
 import ru.mrapple100.core.character.response.CharacterResponseList
 import ru.mrapple100.domain.character.model.CharacterCardModel
@@ -41,6 +42,11 @@ fun CharacterResponse.mapToCharacterModel():CharacterModel{
 
 }
 fun CharacterModel.mapToCharacterEntity():CharacterEntity{
+    val imageEntity = ImageEntity(
+        0,
+        this.id,
+        this.imageBitmap?.toByteArray() ?: byteArrayOf()
+    )
     return CharacterEntity(
         id = this.id,
         name = this.name,
@@ -51,7 +57,7 @@ fun CharacterModel.mapToCharacterEntity():CharacterEntity{
         origin = Location(this.origin.name,this.origin.url),
         location = Location(this.location.name,this.location.url),
         imageStr = this.imageStr,
-        imageBitmap = this.imageBitmap?.toByteArray() ?: byteArrayOf(),
+        imageEntity = imageEntity,
         episode = this.episode,
         url = this.url,
         created = this.created

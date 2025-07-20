@@ -8,4 +8,8 @@ interface CharacterService {
     @GET("/character/{range}")
     suspend fun getCharacters(@Path("range") range:String): List<CharacterResponse>
 
+    @GET("/character/{range}")
+    suspend fun getCharacter(@Path("range") range:String): CharacterResponse
+
+
 }

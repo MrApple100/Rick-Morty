@@ -13,4 +13,8 @@ internal class CharacterRemoteDataSource @Inject constructor(
         val range:String = arrayFromTo.joinToString(separator = ",")
        return characterService.getCharacters(range)
     }
+    suspend fun getCharacter(id:Int): CharacterResponse {
+
+        return characterService.getCharacter(id.toString())
+    }
 }

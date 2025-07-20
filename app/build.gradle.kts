@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    kotlin("plugin.serialization") version "2.2.0"
+    id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -36,6 +39,32 @@ android {
 }
 
 dependencies {
+    implementation(project(":common"))
+    implementation(project(":domain"))
+
+    // DI
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+
+    implementation(libs.kotlinx.serialization.json)
+
+
+
+    // Compose
+    implementation (libs.androidx.ui)
+    implementation (libs.androidx.material)
+    implementation (libs.androidx.ui.tooling.preview)
+    implementation (libs.androidx.lifecycle.runtime.ktx)
+    implementation (libs.androidx.activity.compose)
+
+    // Orbit
+    implementation (libs.orbit.core)
+    implementation (libs.orbit.viewmodel)
+    implementation (libs.orbit.compose)
+    testImplementation (libs.orbit.test)
+
+    // Coil
+    implementation (libs.coil.compose)
 
     implementation(libs.androidx.core.ktx)
     testImplementation(libs.junit)

@@ -11,6 +11,9 @@ interface CharacterDao {
     @Query("SELECT * FROM characterentity WHERE id BETWEEN :from and :to")
     fun getCharactersFromTo(from:Int,to:Int):List<CharacterEntity>
 
+    @Query("SELECT * FROM characterentity")
+    fun getCharacters():List<CharacterEntity>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertEntities(entities: List<CharacterEntity>)
 

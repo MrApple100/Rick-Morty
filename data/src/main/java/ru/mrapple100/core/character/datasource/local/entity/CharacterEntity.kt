@@ -3,6 +3,7 @@ package ru.mrapple100.core.character.datasource.local.entity
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 import ru.mrapple100.domain.character.model.Gender
 import ru.mrapple100.domain.character.model.Location
 import ru.mrapple100.domain.character.model.Status
@@ -20,7 +21,8 @@ data class CharacterEntity(
     @Embedded("location")
     val location: Location,
     val imageStr: String,
-    val imageBitmap: ByteArray,
+    @Relation(parentColumn = "id", entityColumn = "characterId", entity = ImageEntity::class)
+    val imageEntity: ImageEntity,
     val episode: List<String>,
     val url: String,
     val created: String
