@@ -8,12 +8,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material.Scaffold
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.*
+
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ru.mrapple100.domain.character.model.CharacterModel
 import ru.mrapple100.rickmorty.ui.common.UiStatus
+import ru.mrapple100.rickmorty.ui.components.molecules.ErrorMessage
+import ru.mrapple100.rickmorty.ui.components.molecules.LoadingIndicator
+import ru.mrapple100.rickmorty.ui.components.molecules.SearchBar
+import ru.mrapple100.rickmorty.ui.components.molecules.TopBar
+import ru.mrapple100.rickmorty.ui.components.organism.CharacterTwoCard
 
 
 @Composable
@@ -49,11 +55,11 @@ fun CharacterListPage(
 
                     if (state.status == UiStatus.Success) {
                         setupTwoGrid(state.detailsList) { one, two ->
-                            PokemonTwoCard(
+                            CharacterTwoCard(
                                 one = one,
-                                onClickedOne = { one?.let { onShowDetail(it.pokemon.id) } },
+                                onClickedOne = { one?.let { onShowDetail(it.id) } },
                                 two = two,
-                                onClickedTwo = { two?.let { onShowDetail(it.pokemon.id) } },
+                                onClickedTwo = { two?.let { onShowDetail(it.id) } },
                                 modifier = Modifier
                                     .height(150.dp)
                                     .fillMaxWidth()
@@ -82,8 +88,8 @@ fun CharacterListPage(
 }
 
 private fun LazyListScope.setupTwoGrid(
-    entities: List<PokemonDetails>,
-    row: @Composable (one: PokemonDetails?, two: PokemonDetails?) -> Unit
+    entities: List<CharacterModel>,
+    row: @Composable (one: CharacterModel?, two: CharacterModel?) -> Unit
 ) {
     val rowData = if (entities.count() <= 2) {
         listOf(entities)

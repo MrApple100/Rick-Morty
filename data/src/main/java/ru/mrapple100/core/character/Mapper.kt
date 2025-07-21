@@ -26,10 +26,10 @@ fun CharacterResponse.mapToCharacterModel():CharacterModel{
     return CharacterModel(
         id = this.id,
         name = this.name,
-        status = Status.safeValueOf(this.status.name),
+        status = Status.safeValueOf(this.status),
         species = this.species,
         type = this.type,
-        gender = Gender.safeValueOf(this.gender.name),
+        gender = Gender.safeValueOf(this.gender),
         origin = Location(this.origin.name,this.origin.url),
         location = Location(this.location.name,this.location.url),
         imageStr = this.image,
@@ -42,11 +42,6 @@ fun CharacterResponse.mapToCharacterModel():CharacterModel{
 
 }
 fun CharacterModel.mapToCharacterEntity():CharacterEntity{
-    val imageEntity = ImageEntity(
-        0,
-        this.id,
-        this.imageBitmap?.toByteArray() ?: byteArrayOf()
-    )
     return CharacterEntity(
         id = this.id,
         name = this.name,
@@ -56,14 +51,20 @@ fun CharacterModel.mapToCharacterEntity():CharacterEntity{
         gender = Gender.safeValueOf(this.gender.name),
         origin = Location(this.origin.name,this.origin.url),
         location = Location(this.location.name,this.location.url),
-        imageStr = this.imageStr,
-        imageEntity = imageEntity,
+        imageUrl = this.imageStr,
         episode = this.episode,
         url = this.url,
         created = this.created
 
     )
 
+}
+fun CharacterModel.mapToImageEntity():ImageEntity{
+    return ImageEntity(
+        0,
+        this.id,
+        this.imageBitmap?.toByteArray() ?: byteArrayOf()
+    )
 }
 internal fun CharacterResponseList.mapToCharacterModels() =
     map { it.mapToCharacterModel() }

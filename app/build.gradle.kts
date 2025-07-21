@@ -2,13 +2,17 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     kotlin("plugin.serialization") version "2.2.0"
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.hilt.android)
     id("com.google.devtools.ksp")
+
+    alias(libs.plugins.compose.compiler)
+
 }
 
 android {
     namespace = "ru.mrapple100.rickmorty"
     compileSdk = 35
+
 
     defaultConfig {
         applicationId = "ru.mrapple100.rickmorty"
@@ -37,14 +41,22 @@ android {
         jvmTarget = "11"
     }
 }
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
 
 dependencies {
     implementation(project(":common"))
     implementation(project(":domain"))
+    implementation(project(":data"))
+
 
     // DI
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+    implementation (libs.androidx.hilt.navigation.compose)
+
+
 
     implementation(libs.kotlinx.serialization.json)
 
@@ -65,9 +77,15 @@ dependencies {
 
     // Coil
     implementation (libs.coil.compose)
+// Navigation Compose
+    implementation (libs.androidx.navigation)
+
 
     implementation(libs.androidx.core.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+
+
 }

@@ -1,8 +1,7 @@
 package ru.mrapple100.rickmorty.ui.components.molecules
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.*
+
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -11,8 +10,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import ru.mrapple100.rickmorty.R
+import ru.mrapple100.rickmorty.ui.theme.RickAndMortyTheme
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(modifier: Modifier = Modifier) {
     TopAppBar(
@@ -20,8 +21,8 @@ fun TopBar(modifier: Modifier = Modifier) {
             Text(
                 text = stringResource(id = R.string.app_name),
                 textAlign = TextAlign.Left,
-                color = MaterialTheme.colors.onPrimary,
-                style = MaterialTheme.typography.h4,
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.headlineMedium,
                 fontStyle = FontStyle.Italic,
                 fontWeight = FontWeight.Bold
             )
@@ -33,7 +34,7 @@ fun TopBar(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun TopBar_Preview() {
-    OrbitTheme {
+    RickAndMortyTheme {
         TopBar()
     }
 }

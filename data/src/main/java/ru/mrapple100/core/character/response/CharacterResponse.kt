@@ -8,10 +8,10 @@ internal typealias CharacterResponseList = List<CharacterResponse>
 data class CharacterResponse(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
-    @SerialName("status") val status: Status,
+    @SerialName("status") val status: String,
     @SerialName("species") val species: String,
     @SerialName("type") val type: String,
-    @SerialName("gender") val gender: Gender,
+    @SerialName("gender") val gender: String,
     @SerialName("origin") val origin: Location,
     @SerialName("location") val location: Location,
     @SerialName("image") val image: String,

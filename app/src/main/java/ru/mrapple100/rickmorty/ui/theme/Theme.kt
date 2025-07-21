@@ -1,27 +1,24 @@
 package ru.mrapple100.rickmorty.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Shapes
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.*
+
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import kotlinx.serialization.json.JsonNull.content
 
-private val DarkColorPalette = darkColors(
+private val DarkColorPalette = darkColorScheme(
     primary = Color(0xff4c8c4a),
-    primaryVariant = Color(0xff000000),
+    primaryContainer = Color(0xff000000),
     secondary = Color(0xff212121),
-    secondaryVariant = Color(0xff212121),
+    secondaryContainer = Color(0xff212121),
     onPrimary = Color(0xffffffff)
 )
 
-private val LightColorPalette = lightColors(
+private val LightColorPalette = lightColorScheme(
     primary = Color(0xff4c8c4a),
-    primaryVariant = Color(0xff4c8c4a),
+    primaryContainer = Color(0xff4c8c4a),
     secondary = Color(0xff212121),
-    secondaryVariant = Color(0xff212121),
+    secondaryContainer = Color(0xff212121),
     onPrimary = Color(0xffffffff)
 )
 
@@ -34,7 +31,7 @@ fun RickAndMortyTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Comp
     }
 
     MaterialTheme(
-        colors = colors,
+        colorScheme = colors,
         typography = Typography,
         shapes = Shapes,
         content = content

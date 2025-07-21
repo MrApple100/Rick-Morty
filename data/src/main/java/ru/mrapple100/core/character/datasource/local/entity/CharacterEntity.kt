@@ -16,13 +16,9 @@ data class CharacterEntity(
     val species: String,
     val type: String,
     val gender: Gender,
-    @Embedded("origin")
-    val origin: Location,
-    @Embedded("location")
-    val location: Location,
-    val imageStr: String,
-    @Relation(parentColumn = "id", entityColumn = "characterId", entity = ImageEntity::class)
-    val imageEntity: ImageEntity,
+    @Embedded(prefix = "origin_") val origin: Location,
+    @Embedded(prefix = "location_") val location: Location,
+    val imageUrl: String,
     val episode: List<String>,
     val url: String,
     val created: String

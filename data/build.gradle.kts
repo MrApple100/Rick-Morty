@@ -1,8 +1,8 @@
 plugins {
-    alias(libs.plugins.android.application)
+    id("com.android.library")
     alias(libs.plugins.kotlin.android)
     kotlin("plugin.serialization") version "2.2.0"
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.hilt.android)
     id("com.google.devtools.ksp")
 }
 
@@ -11,11 +11,9 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "ru.mrapple100.core"
         minSdk = 30
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -45,12 +43,17 @@ dependencies {
     // DI
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+    implementation (libs.androidx.hilt.navigation.compose)
+
 
     implementation(libs.kotlinx.serialization.json)
 
     // Network
     implementation (libs.com.squareup.retrofit2.retrofit)
     implementation (libs.converter.gson)
+    // Retrofit2
+    implementation(libs.logging.interceptor)
+    implementation(libs.kotlinx.coroutines.android)
 
     // Room
     implementation(libs.androidx.room.runtime)
