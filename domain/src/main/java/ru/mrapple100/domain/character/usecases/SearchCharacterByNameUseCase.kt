@@ -12,10 +12,19 @@ class SearchCharacterByNameUseCase @Inject constructor(
     private val characterRepository: CharacterRepository
 ) {
     suspend operator fun invoke(searchText: String): Flow<List<CharacterModel>> {
-        return if (searchText.isEmpty()) {
-            characterRepository.getCharacters()
-        } else {
-            characterRepository.getCharacters().map { it.filter{ ch -> ch.name.contains(searchText) }}
+        val maxLocalPage = characterRepository.getMaxLocalPage()
+        return if(characterRepository.getCurrentPage()<maxLocalPage){
+            if (searchText.isEmpty()) {
+                characterRepository.getLocalCharacters()
+            } else {
+                characterRepository.getLocalCharacters().map { it.filter{ ch -> ch.name.contains(searchText) }}
+            }
+        }else{
+             if (searchText.isEmpty()) {
+                characterRepository.fetchAndSaveCharacters()
+            } else {
+                characterRepository.fetchAndSaveCharacters().map { it.filter{ ch -> ch.name.contains(searchText) }}
+            }
         }
     }
 }

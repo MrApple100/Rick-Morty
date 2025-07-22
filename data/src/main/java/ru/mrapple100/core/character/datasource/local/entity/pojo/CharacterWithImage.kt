@@ -11,5 +11,5 @@ data class CharacterWithImage(
         parentColumn = "id",
         entityColumn = "characterId"
     )
-    val image: ImageEntity? // Optional if image might be missing
+    val image: ImageEntity?
 )

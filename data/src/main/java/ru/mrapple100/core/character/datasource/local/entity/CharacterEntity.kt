@@ -21,5 +21,6 @@ data class CharacterEntity(
     val imageUrl: String,
     val episode: List<String>,
     val url: String,
-    val created: String
+    val created: String,
+    val page:Int
 )
