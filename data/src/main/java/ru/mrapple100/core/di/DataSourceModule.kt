@@ -1,6 +1,8 @@
 package ru.mrapple100.core.di
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import android.util.Log
 import androidx.room.Room
 import dagger.Module
@@ -13,6 +15,7 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.mrapple100.core.character.datasource.CharacterMemoryDataSource
 import ru.mrapple100.core.character.datasource.local.AppDatabase
 import ru.mrapple100.core.character.datasource.local.CharacterLocalDataSource
 import ru.mrapple100.core.character.datasource.local.dao.CharacterDao
@@ -83,6 +86,17 @@ class DataSourceModule {
         return CharacterRemoteDataSource(service)
     }
 
+    @Singleton
+    @Provides
+    fun provideSharedPreference(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences("preferences_name", Context.MODE_PRIVATE)
+    }
+
+    @Singleton
+    @Provides
+    fun providesCharacterMemoryDataSource(sharedPreferences: SharedPreferences): CharacterMemoryDataSource {
+        return CharacterMemoryDataSource(sharedPreferences)
+    }
     @Singleton
     @Provides
     fun providesCharacterLocalDataSource(characterDao: CharacterDao,

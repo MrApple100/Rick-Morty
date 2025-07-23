@@ -5,6 +5,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ru.mrapple100.core.character.datasource.CharacterMemoryDataSource
 import ru.mrapple100.core.character.datasource.local.CharacterLocalDataSource
 import ru.mrapple100.core.character.datasource.remote.CharacterRemoteDataSource
 import ru.mrapple100.core.character.repository.CharacterRepositoryImpl
@@ -24,9 +25,10 @@ class RepositoryModule {
     @Provides
     fun provideCharacterRepository(
         remote: CharacterRemoteDataSource,
+        memory: CharacterMemoryDataSource,
         local: CharacterLocalDataSource
     ): CharacterRepository {
-        return CharacterRepositoryImpl(remote, local)
+        return CharacterRepositoryImpl(remote,memory, local)
     }
 
 
