@@ -86,12 +86,27 @@ fun CharacterWithImage.mapToCharacterModel():CharacterModel{
 
     )
 }
+
+fun CharacterWithImage.mapToCharacterCardModel():CharacterCardModel{
+    return CharacterCardModel(
+        id = this.character.id,
+        name = this.character.name,
+        species = this.character.species,
+        imageStr = this.character.imageUrl,
+        imageBitmap = this.image?.imageBitmap?.toBitmap(),
+        url = this.character.url,
+
+    )
+}
 @JvmName("mapToCharacterModelsFromResponses")
 internal fun CharacterResponseList.mapToCharacterModels() =
     map { it.mapToCharacterModel() }
-
+@JvmName("mapToCharacterEntitiesFromCharModels")
 internal fun List<CharacterModel>.mapToCharacterEntities(page:Int) =
     map { it.mapToCharacterEntity(page) }
+@JvmName("mapToCharacterCardModelsFromCharWithImages")
+internal fun List<CharacterWithImage>.mapToCharacterCardModels() =
+    map { it.mapToCharacterCardModel() }
 @JvmName("mapToCharacterModelsFromEntities")
 internal fun List<CharacterWithImage>.mapToCharacterModels() =
     map { it.mapToCharacterModel() }

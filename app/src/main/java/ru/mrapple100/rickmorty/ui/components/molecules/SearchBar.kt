@@ -28,9 +28,9 @@ fun SearchBar(
             onValueChange = onChangedSearchText,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
             ),
             label = { Text(stringResource(R.string.search)) }
         )

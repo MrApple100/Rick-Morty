@@ -62,7 +62,9 @@ private fun NavGraphBuilder.addLibrary(navController: NavController) {
         CharacterListPage(
             state = state,
             onShowDetail = { id -> viewModel.showDetails(id) },
-            onSearchPokemon = { text -> viewModel.searchPokemon(text) }
+            onSearchCharacter = { text -> viewModel.searchCharacter(text) },
+            onScrollDown = {  -> viewModel.scrollDown()},
+            onRefresh = {-> viewModel.refreshCharacterPage()}
         )
     }
 }

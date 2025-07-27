@@ -15,6 +15,7 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.mrapple100.common.ResponseHandler
 import ru.mrapple100.core.character.datasource.CharacterMemoryDataSource
 import ru.mrapple100.core.character.datasource.local.AppDatabase
 import ru.mrapple100.core.character.datasource.local.CharacterLocalDataSource
@@ -42,9 +43,7 @@ class DataSourceModule {
     internal fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
 
         return OkHttpClient.Builder()
-            .connectTimeout(60, TimeUnit.SECONDS)
-            .readTimeout(60, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(3, TimeUnit.SECONDS)
             .addInterceptor(loggingInterceptor)
             .build()
     }
@@ -82,8 +81,14 @@ class DataSourceModule {
 
     @Singleton
     @Provides
-    fun providesCharacterRemoteDataSource(service: CharacterService):CharacterRemoteDataSource{
-        return CharacterRemoteDataSource(service)
+    fun provideResponseHandler() = ResponseHandler()
+
+    @Singleton
+    @Provides
+    fun providesCharacterRemoteDataSource(service: CharacterService,responseHandler: ResponseHandler):CharacterRemoteDataSource{
+        return CharacterRemoteDataSource(
+            service,
+            responseHandler)
     }
 
     @Singleton

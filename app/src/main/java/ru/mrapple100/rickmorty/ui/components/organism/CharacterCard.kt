@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import ru.mrapple100.domain.character.model.CharacterCardModel
 import ru.mrapple100.domain.character.model.CharacterModel
 import ru.mrapple100.rickmorty.R
 
@@ -25,7 +26,7 @@ import ru.mrapple100.rickmorty.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharacterCard(
-    characterModel: CharacterModel,
+    characterModel: CharacterCardModel,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {

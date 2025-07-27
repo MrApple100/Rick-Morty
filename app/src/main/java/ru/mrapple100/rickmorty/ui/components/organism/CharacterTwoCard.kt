@@ -9,13 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ru.mrapple100.domain.character.model.CharacterCardModel
 import ru.mrapple100.domain.character.model.CharacterModel
 
 @Composable
 fun CharacterTwoCard(
-    one: CharacterModel? = null,
+    one: CharacterCardModel? = null,
     onClickedOne: (() -> Unit)? = null,
-    two: CharacterModel? = null,
+    two: CharacterCardModel? = null,
     onClickedTwo: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {

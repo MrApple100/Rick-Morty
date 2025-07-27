@@ -8,7 +8,7 @@ import javax.inject.Inject
 class LoadCharacterDetailsUseCase @Inject constructor(
     private val characterRepository: CharacterRepository
 ) {
-    suspend operator fun invoke(id:Int):Flow<CharacterModel>{
+    suspend operator fun invoke(id:Int):Flow<CharacterModel?>{
         return characterRepository.getCharacterById(id)
     }
 }
