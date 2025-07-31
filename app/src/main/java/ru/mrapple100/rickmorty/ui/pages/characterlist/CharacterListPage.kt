@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,6 +35,7 @@ import ru.mrapple100.rickmorty.ui.components.molecules.LoadingIndicator
 import ru.mrapple100.rickmorty.ui.components.molecules.SearchBar
 import ru.mrapple100.rickmorty.ui.components.molecules.TopBar
 import ru.mrapple100.rickmorty.ui.components.organism.CharacterTwoCard
+import ru.mrapple100.rickmorty.ui.components.organism.ShimmeredCharacterTwoCard
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,8 +81,7 @@ fun CharacterListPage(
                         onRefresh()
                     },
                     modifier = Modifier
-                        .fillMaxSize(),
-                    indicator = {}
+                        .fillMaxSize()
                 ) {
                     LazyColumn(
                         modifier = Modifier
@@ -97,40 +98,48 @@ fun CharacterListPage(
                             )
                         }
 
-
-                        if (state.status == UiStatus.Success || state.status == UiStatus.ScrollLoading) {
-                            setupTwoGrid(state.detailsList) { one, two ->
-                                CharacterTwoCard(
-                                    one = one,
-                                    onClickedOne = { one?.let { onShowDetail(it.id) } },
-                                    two = two,
-                                    onClickedTwo = { two?.let { onShowDetail(it.id) } },
-                                    modifier = Modifier
-                                        .height(150.dp)
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 8.dp)
-                                        .padding(bottom = 8.dp)
-                                )
+                        when(state.status) {
+                            is UiStatus.Success,
+                            is UiStatus.ScrollLoading -> {
+                                setupTwoGrid(state.detailsList) { one, two ->
+                                    CharacterTwoCard(
+                                        one = one,
+                                        onClickedOne = { one?.let { onShowDetail(it.id) } },
+                                        two = two,
+                                        onClickedTwo = { two?.let { onShowDetail(it.id) } },
+                                        modifier = Modifier
+                                            .height(150.dp)
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 8.dp)
+                                            .padding(bottom = 8.dp)
+                                    )
+                                }
                             }
+                            is UiStatus.Loading -> {
+                                items(
+                                    count = state.detailsList.size.coerceIn(5,10)
+                                ){
+                                        ShimmeredCharacterTwoCard(modifier = Modifier
+                                            .height(150.dp)
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 8.dp)
+                                            .padding(bottom = 8.dp))
+                                }
+                            }
+
+                            is UiStatus.Failed -> {}
                         }
                     }
 
                     when (val status = state.status) {
-                        UiStatus.Loading -> {
-                            LoadingIndicator(modifier = Modifier.fillMaxSize())
-                        }
-
-                        is UiStatus.ScrollLoading -> {
-                            LoadingIndicator(modifier = Modifier.fillMaxWidth())
-                        }
-
+                        is UiStatus.Loading,
+                        is UiStatus.ScrollLoading -> {}
                         is UiStatus.Failed -> {
                             ErrorMessage(
                                 message = status.message,
                                 modifier = Modifier.fillMaxSize()
                             )
                         }
-
                         else -> Unit
                     }
                 }
@@ -153,7 +162,8 @@ private fun LazyListScope.setupTwoGrid(
         item { row(column.getOrNull(0), column.getOrNull(1)) }
     }
 }
+
 fun LazyListState.isScrolledToTheEnd() =
     if(layoutInfo.totalItemsCount<20)
         true
-    else layoutInfo.visibleItemsInfo.find { it -> it.index == layoutInfo.totalItemsCount - 20}!=null
+    else layoutInfo.visibleItemsInfo.find { it -> it.index == layoutInfo.totalItemsCount - 10}!=null

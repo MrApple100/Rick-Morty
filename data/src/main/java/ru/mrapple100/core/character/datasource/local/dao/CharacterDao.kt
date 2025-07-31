@@ -18,7 +18,7 @@ interface CharacterDao {
     @Query("SELECT * FROM characterEntity WHERE page=:page")
     suspend fun getCharacters(page:Int): List<CharacterWithImage>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEntities(entities: List<CharacterEntity>)
 
 }

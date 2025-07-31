@@ -45,4 +45,27 @@ fun CharacterTwoCard(
     }
 }
 
+@Composable
+fun ShimmeredCharacterTwoCard(
+    modifier: Modifier = Modifier
+) {
+    Row(modifier = modifier) {
+
+            ShimmeredCharacterCard(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(fraction = 0.5f)
+                    .padding(end = 4.dp)
+            )
+
+            ShimmeredCharacterCard(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth()
+                    .padding(start = 4.dp)
+            )
+
+    }
+}
+
 

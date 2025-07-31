@@ -80,6 +80,10 @@ dependencies {
 // Navigation Compose
     implementation (libs.androidx.navigation)
 
+    //Shimmer
+    implementation(libs.compose.shimmer)
+
+
 
     implementation(libs.androidx.core.ktx)
     testImplementation(libs.junit)
