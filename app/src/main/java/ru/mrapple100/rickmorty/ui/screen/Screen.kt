@@ -4,10 +4,10 @@ import androidx.navigation.NavBackStackEntry
 
 sealed class Screen(val route: String) {
     object List : Screen(route = "list")
-    object Details : Screen(route = "details/{id}") {
-        fun createRoute(id: Int) = "details/$id"
+    object Details : Screen(route = "details?characterId={characterId}") {
+        fun createRoute(characterId: Int) = "details?characterId=${characterId}"
         fun getArgumentId(entry: NavBackStackEntry): Int {
-            return entry.arguments?.getString("id")?.toInt() ?: 0
+            return entry.arguments?.getString("characterId")?.toInt() ?: 0
         }
     }
 }

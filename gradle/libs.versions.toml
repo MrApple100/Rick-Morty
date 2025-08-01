@@ -19,6 +19,7 @@ loggingInterceptor = "4.9.3"
 material = "1.12.0"
 materialVersion = "1.3.2"
 orbitCore = "4.6.0"
+paletteKtx = "1.0.0"
 roomRuntime = "2.7.2"
 squareupRetrofitVersion = "2.11.0"
 ui = "1.7.0"
@@ -34,6 +35,7 @@ androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-com
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-material = { module = "androidx.compose.material3:material3", version.ref = "materialVersion" }
+androidx-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = "paletteKtx" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }

@@ -5,17 +5,17 @@ import android.graphics.Bitmap
 internal typealias CharacterModelList = List<CharacterModel>
 
 data class CharacterModel(
-    val id: Int,
-    val name: String,
-    val status: Status,
-    val species: String,
-    val type: String,
-    val gender: Gender,
-    val origin: Location,
-    val location: Location,
-    val imageStr: String,
+    val id: Int=0,
+    val name: String="no name",
+    val status: Status=Status.UNKNOWN,
+    val species: String="no species",
+    val type: String="no type",
+    val gender: Gender=Gender.UNKNOWN,
+    val origin: Location=Location("no home location",""),
+    val location: Location=Location("no location",""),
+    val imageStr: String = "",
     val imageBitmap: Bitmap?=null,
-    val episode: List<String>,
-    val url: String,
-    val created: String
+    val episode: List<String> = emptyList(),
+    val url: String ="",
+    val created: String = ""
 )

@@ -68,6 +68,8 @@ fun CharacterCard(
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(characterModel.imageStr)
+                        .memoryCacheKey(characterModel.name + characterModel.species)
+                        .placeholderMemoryCacheKey(characterModel.name + characterModel.species)
                         .crossfade(true)
                         .build(),
                     placeholder = painterResource(

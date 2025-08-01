@@ -77,7 +77,10 @@ dependencies {
 
     // Coil
     implementation (libs.coil.compose)
-// Navigation Compose
+
+    implementation (libs.androidx.palette.ktx)
+
+    // Navigation Compose
     implementation (libs.androidx.navigation)
 
     //Shimmer

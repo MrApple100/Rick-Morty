@@ -1,6 +1,7 @@
 package ru.mrapple100.rickmorty.ui.pages.characterlist
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +33,7 @@ class CharacterListViewModel @Inject constructor(
     private val searchCharacterByNameUseCase: SearchCharacterByNameUseCase,
     private val updateCharacterListPageUseCase: UpdateCharacterListPageUseCase,
     private val scrollDownPageUseCase: ScrollDownPageUseCase,
+    val savedStateHandle: SavedStateHandle
 
     ):ContainerHost<CharacterCardListState,CharacterListSideEffect>,ViewModel() {
 
@@ -96,9 +98,6 @@ class CharacterListViewModel @Inject constructor(
                                 detailsList = emptyList()
                             )
                         }
-                    }
-                    if(state.detailsList.size<20 && !details.isNullOrEmpty()){
-
                     }
                 }
             }
