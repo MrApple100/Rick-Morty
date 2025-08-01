@@ -14,7 +14,6 @@ class ScrollDownPageUseCase @Inject constructor(
     suspend operator fun invoke(): Flow<List<CharacterCardModel>?> {
         val maxPage = characterRepository.getMaxPage()
         val currentPage = characterRepository.getCurrentPage()
-        Log.d("SCROLLDOWN", "$maxPage $currentPage")
 
         return if (maxPage > currentPage) {
             characterRepository.upPage()

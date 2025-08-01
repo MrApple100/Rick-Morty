@@ -72,7 +72,6 @@ fun CharacterListPage(
                 LaunchedEffect(isFocused) {
                     if (state.status == UiStatus.Success && listState.isScrolledToTheEnd()) {
                         onScrollDown()
-                        Log.d("SCROLLDOWN", "SCROLLDOWN")
                     }
                 }
                 PullToRefreshBox (
@@ -164,6 +163,10 @@ private fun LazyListScope.setupTwoGrid(
 }
 
 fun LazyListState.isScrolledToTheEnd() =
-    if(layoutInfo.totalItemsCount<20)
+    if (layoutInfo.totalItemsCount < 20)
         true
-    else layoutInfo.visibleItemsInfo.find { it -> it.index == layoutInfo.totalItemsCount - 10}!=null
+    else {
+        val visibleSize = layoutInfo.visibleItemsInfo.size
+        layoutInfo.visibleItemsInfo.find { it -> it.index == layoutInfo.totalItemsCount - visibleSize } != null
+    }
+

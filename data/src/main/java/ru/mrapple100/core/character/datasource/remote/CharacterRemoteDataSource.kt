@@ -15,7 +15,6 @@ class CharacterRemoteDataSource @Inject constructor(
         val arrayFromTo = Array(to-from) { index -> index + from }
         val range:String = arrayFromTo.joinToString(separator = ",")
         val result = characterService.getCharacters(range)
-        Log.d("FIRSTFIRST",result.get(0).toString())
 
         result
     }

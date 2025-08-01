@@ -72,10 +72,8 @@ class CharacterRepositoryImpl @Inject constructor(
 
     override suspend fun getLocalCharacters(): Flow<List<CharacterCardModel>?> = flow {
         val page = characterMemoryDataSource.getPage()
-        Log.d("LOCALLOCAL","$page")
 
         var maxPage = characterMemoryDataSource.getMaxLocalPage()
-        Log.d("LOCALLOCAL","$maxPage $page")
         if(maxPage>=page) {
             emit(characterLocalDataSource.getCharacters(page).mapToCharacterCardModels())
         }else{

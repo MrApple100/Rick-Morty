@@ -16,7 +16,7 @@ class SearchCharacterByNameUseCase @Inject constructor(
         characterRepository.currentPageToOne()
         var maxPage = characterRepository.getMaxPage()
         var currentPage = characterRepository.getCurrentPage()
-        var twentyCh = 0
+        var countCh = 0
         var isFirstTime = true
         return if (searchText.isEmpty()) {
                 characterRepository.fetchAndSaveCharacters()
@@ -35,14 +35,13 @@ class SearchCharacterByNameUseCase @Inject constructor(
                     chs.collect{ chList ->
                         kotlinx.coroutines.delay(100)
                         sumList += (chList!!)
-                        twentyCh = sumList.size
-                        Log.d("USECASEUSECASE", sumList.toString())
+                        countCh = sumList.size
 
                     }
 
                     isFirstTime = false
 
-                } while (twentyCh < 20 && maxPage > currentPage)
+                } while (countCh < 60 && maxPage > currentPage)
                 this.emit(sumList)
 
             }
