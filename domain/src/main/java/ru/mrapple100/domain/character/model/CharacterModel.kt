@@ -6,9 +6,9 @@ internal typealias CharacterModelList = List<CharacterModel>
 
 data class CharacterModel(
     val id: Int=0,
-    val name: String="no name",
+    val name: String="no info",
     val status: Status=Status.UNKNOWN,
-    val species: String="no species",
+    val species: String="no info",
     val type: String="no type",
     val gender: Gender=Gender.UNKNOWN,
     val origin: Location=Location("no home location",""),
