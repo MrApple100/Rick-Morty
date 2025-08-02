@@ -1,5 +1,8 @@
 package ru.mrapple100.rickmorty.ui.components.organism
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,24 +31,27 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import ru.mrapple100.domain.character.model.CharacterCardModel
 import ru.mrapple100.domain.character.model.CharacterModel
+import ru.mrapple100.rickmorty.LocalAnimatedVisibilityScope
+import ru.mrapple100.rickmorty.LocalSharedTransitionScope
 import ru.mrapple100.rickmorty.R
 import ru.mrapple100.rickmorty.ui.components.shimmer.ShimmerBox
 import ru.mrapple100.rickmorty.ui.components.shimmer.ShimmerThemes
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun CharacterCard(
     characterModel: CharacterCardModel,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
-) {
+    ) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
@@ -58,30 +64,47 @@ fun CharacterCard(
                 .wrapContentHeight(align = Alignment.CenterVertically)
                 .padding(8.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .align(Alignment.CenterHorizontally)
-                    .clip(shape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)),
+            val sharedTransitionScope = LocalSharedTransitionScope.current ?: throw IllegalStateException("No Scope found")
+            val animatedContentScope = LocalAnimatedVisibilityScope.current ?: throw IllegalStateException("No Scope found")
+            with(sharedTransitionScope) {
+                Box(
+                    modifier = Modifier
 
-            ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(characterModel.imageStr)
-                        .memoryCacheKey(characterModel.name + characterModel.species)
-                        .placeholderMemoryCacheKey(characterModel.name + characterModel.species)
-                        .crossfade(true)
-                        .build(),
-                    placeholder = painterResource(
-                        if (isSystemInDarkTheme()) {
-                            R.drawable.ic_launcher_background
-                        } else {
-                            R.drawable.ic_launcher_foreground
-                        }
-                    ),
-                    error = painterResource(R.drawable.ic_launcher_foreground),
-                    contentDescription = null,
-                )
+                        .size(100.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .clip(shape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp))
+                        .sharedElement(
+                            sharedTransitionScope.rememberSharedContentState(key = "image-${characterModel.id}"),
+                            animatedVisibilityScope = animatedContentScope
+                        ).sharedBounds(
+                            rememberSharedContentState(
+                                key = "image-${characterModel.id}"
+                            ),
+                            animatedVisibilityScope = animatedContentScope
+                        )
+                    ,
+
+                    ) {
+                    AsyncImage(
+                        modifier = Modifier
+                            .size(100.dp),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(characterModel.imageStr)
+                            .crossfade(true)
+                            .memoryCacheKey("image-${characterModel.id}")
+                            .placeholderMemoryCacheKey("image-${characterModel.id}")
+                            .build(),
+                        placeholder = painterResource(
+                            if (isSystemInDarkTheme()) {
+                                R.drawable.ic_launcher_background
+                            } else {
+                                R.drawable.ic_launcher_foreground
+                            }
+                        ),
+                        error = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = null,
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row(

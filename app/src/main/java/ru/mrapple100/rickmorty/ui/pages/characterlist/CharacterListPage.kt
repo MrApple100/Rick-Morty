@@ -2,6 +2,9 @@ package ru.mrapple100.rickmorty.ui.pages.characterlist
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +32,7 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import ru.mrapple100.domain.character.model.CharacterCardModel
 import ru.mrapple100.domain.character.model.CharacterModel
+import ru.mrapple100.rickmorty.LocalAnimatedVisibilityScope
 import ru.mrapple100.rickmorty.ui.common.UiStatus
 import ru.mrapple100.rickmorty.ui.components.molecules.ErrorMessage
 import ru.mrapple100.rickmorty.ui.components.molecules.LoadingIndicator
@@ -38,7 +42,7 @@ import ru.mrapple100.rickmorty.ui.components.organism.CharacterTwoCard
 import ru.mrapple100.rickmorty.ui.components.organism.ShimmeredCharacterTwoCard
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun CharacterListPage(
     state: CharacterCardListState,
@@ -102,6 +106,7 @@ fun CharacterListPage(
                             is UiStatus.ScrollLoading -> {
                                 setupTwoGrid(state.detailsList) { one, two ->
                                     CharacterTwoCard(
+
                                         one = one,
                                         onClickedOne = { one?.let { onShowDetail(it.id) } },
                                         two = two,

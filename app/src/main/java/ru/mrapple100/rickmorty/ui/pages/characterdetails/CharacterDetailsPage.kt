@@ -1,5 +1,8 @@
 package ru.mrapple100.rickmorty.ui.pages.characterdetails
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -62,14 +65,17 @@ import coil.request.ImageRequest
 import ru.mrapple100.domain.character.model.CharacterModel
 import ru.mrapple100.domain.character.model.Gender
 import ru.mrapple100.domain.character.model.Status
+import ru.mrapple100.rickmorty.LocalAnimatedVisibilityScope
+import ru.mrapple100.rickmorty.LocalSharedTransitionScope
 import ru.mrapple100.rickmorty.R
 import ru.mrapple100.rickmorty.ui.components.molecules.TopBar
 import java.util.Locale
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CharacterDetailsPage(
     state: CharacterState,
-    onBackNavigate: () -> Unit,
+    onBackNavigate: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -133,29 +139,43 @@ fun CharacterDetailsPage(
                             .zIndex(2f),
                         contentAlignment = Alignment.TopCenter
                     ) {
-                        Box(
-                            modifier = Modifier
-                                //.background(Color.Red)
-                                .size(200.dp)
-                                .clip(shape = RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp)),
-                            contentAlignment = Alignment.TopCenter
-                        ) {
-
-                            SubcomposeAsyncImage(
+                        val sharedTransitionScope = LocalSharedTransitionScope.current!!
+                        val animatedContentScope = LocalAnimatedVisibilityScope.current!!
+                        with(sharedTransitionScope) {
+                            Box(
                                 modifier = Modifier
-                                    .size(200.dp),
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(state.detailsCharacter.imageStr)
-                                    .crossfade(true)
-                                    .memoryCacheKey(state.detailsCharacter.name + state.detailsCharacter.species)
-                                    .placeholderMemoryCacheKey(state.detailsCharacter.name + state.detailsCharacter.species)
-                                    .build(),
-                                onLoading = {},
-                                onSuccess = {},
-                                onError = {},
-                                contentDescription = null,
-                            )
+                                    //.background(Color.Red)
+                                    .size(200.dp)
+                                    .clip(shape = RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
+                                    .sharedElement(
+                                        sharedTransitionScope.rememberSharedContentState(key = "image-${state.detailsCharacter.id}"),
+                                        animatedVisibilityScope = animatedContentScope
+                                    ).sharedBounds(
+                                        rememberSharedContentState(
+                                            key = "image-${state.detailsCharacter.id}"
+                                        ),
+                                        animatedVisibilityScope = animatedContentScope
+                                    )
+                                ,
+                                contentAlignment = Alignment.TopCenter
+                            ) {
 
+                                SubcomposeAsyncImage(
+                                    modifier = Modifier
+                                        .size(200.dp),
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(state.detailsCharacter.imageStr)
+                                        .crossfade(true)
+                                        .memoryCacheKey("image-${state.detailsCharacter.id}")
+                                        .placeholderMemoryCacheKey("image-${state.detailsCharacter.id}")
+                                        .build(),
+                                    onLoading = {},
+                                    onSuccess = {},
+                                    onError = {},
+                                    contentDescription = null,
+                                )
+
+                            }
 
                         }
                     }
