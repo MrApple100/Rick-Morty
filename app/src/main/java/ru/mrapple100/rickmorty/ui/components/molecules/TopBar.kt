@@ -9,6 +9,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.zIndex
 import ru.mrapple100.rickmorty.R
 import ru.mrapple100.rickmorty.ui.theme.RickAndMortyTheme
 
@@ -17,6 +18,7 @@ import ru.mrapple100.rickmorty.ui.theme.RickAndMortyTheme
 @Composable
 fun TopBar(modifier: Modifier = Modifier) {
     TopAppBar(
+        modifier = modifier,
         title = {
             Text(
                 text = stringResource(id = R.string.app_name),
@@ -27,7 +29,7 @@ fun TopBar(modifier: Modifier = Modifier) {
                 fontWeight = FontWeight.Bold
             )
         },
-        modifier = modifier
+
     )
 }
 

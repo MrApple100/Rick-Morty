@@ -1,17 +1,19 @@
 package ru.mrapple100.rickmorty.ui.pages.characterdetails
 
-import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.BoundsTransform
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,10 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -40,8 +39,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,9 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -71,131 +66,147 @@ import ru.mrapple100.rickmorty.R
 import ru.mrapple100.rickmorty.ui.components.molecules.TopBar
 import java.util.Locale
 
+fun <T> spatialExpressiveSpring() = spring<T>(
+    dampingRatio = 0.8f,
+    stiffness = 380f,
+)
+
+fun <T> nonSpatialExpressiveSpring() = spring<T>(
+    dampingRatio = 1f,
+    stiffness = 1600f,
+)
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+val snackDetailBoundsTransform = BoundsTransform { _, _ ->
+    spatialExpressiveSpring()
+}
+
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CharacterDetailsPage(
     state: CharacterState,
     onBackNavigate: () -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            TopBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            )
-        },
-        content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
+    val sharedTransitionScope = LocalSharedTransitionScope.current!!
+    val animatedContentScope = LocalAnimatedVisibilityScope.current!!
+
+
+        Scaffold(
+            topBar = {
+                TopBar(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    text = state.detailsCharacter.name.replaceFirstChar { char ->
-                        if (char.isLowerCase()) char.titlecase(Locale.ROOT) else char.toString()
-                    },
-                    textAlign = TextAlign.Center,
-                    color = Color.White,
-
-                   // fontFamily = sfProFont,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 22.sp
+                        .fillMaxWidth()
+                        .wrapContentHeight()
                 )
-                Spacer(Modifier.height(15.dp))
-
-
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.TopCenter
+            },
+            content = {
+                with(sharedTransitionScope) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it)
+                        .sharedBounds(
+                            sharedContentState = sharedTransitionScope.rememberSharedContentState(
+                                key = "container + ${state.detailsCharacter.id}"
+                            ),
+                            animatedVisibilityScope = animatedContentScope,
+                            exit = fadeOut(nonSpatialExpressiveSpring()),
+                            enter = fadeIn(nonSpatialExpressiveSpring()),
+                            boundsTransform = snackDetailBoundsTransform)
+                        ,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        text = state.detailsCharacter.name.replaceFirstChar { char ->
+                            if (char.isLowerCase()) char.titlecase(Locale.ROOT) else char.toString()
+                        },
+                        textAlign = TextAlign.Center,
+                        color = Color.White,
+
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 22.sp
+                    )
+                    Spacer(Modifier.height(15.dp))
+
 
                     Box(
-                        modifier = Modifier
-                            .padding(top = 81.dp)
-                            .fillMaxSize()
-                            .zIndex(-1f),
+                        modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.TopCenter
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.defaultrickmorty),
-                            contentDescription = null,
-                            tint = Color.White,
+
+                        Box(
                             modifier = Modifier
-                                .padding(top = 54.dp)
-                                .fillMaxWidth()
-                                .height(400.dp)
-                                .alpha(0.3f)
-                        )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .padding(top = 0.dp)
-                            .fillMaxWidth()
-                           // .background(Color.Yellow)
-                            .zIndex(2f),
-                        contentAlignment = Alignment.TopCenter
-                    ) {
-                        val sharedTransitionScope = LocalSharedTransitionScope.current!!
-                        val animatedContentScope = LocalAnimatedVisibilityScope.current!!
-                        with(sharedTransitionScope) {
-                            Box(
+                                .padding(top = 81.dp)
+                                .fillMaxSize()
+                                .zIndex(-1f),
+                            contentAlignment = Alignment.TopCenter
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.defaultrickmorty),
+                                contentDescription = null,
+                                tint = Color.White,
                                 modifier = Modifier
-                                    //.background(Color.Red)
+                                    .padding(top = 54.dp)
+                                    .fillMaxWidth()
+                                    .height(400.dp)
+                                    .alpha(0.3f)
+
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .padding(top = 0.dp)
+                                .fillMaxWidth()
+                                .zIndex(3f),
+                            contentAlignment = Alignment.TopCenter
+                        ) {
+                            SubcomposeAsyncImage(
+                                modifier = Modifier
                                     .size(200.dp)
-                                    .clip(shape = RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
                                     .sharedElement(
                                         sharedTransitionScope.rememberSharedContentState(key = "image-${state.detailsCharacter.id}"),
-                                        animatedVisibilityScope = animatedContentScope
-                                    ).sharedBounds(
-                                        rememberSharedContentState(
-                                            key = "image-${state.detailsCharacter.id}"
-                                        ),
-                                        animatedVisibilityScope = animatedContentScope
+                                        animatedVisibilityScope = animatedContentScope,
+                                        zIndexInOverlay = 3f,
+                                        placeHolderSize = SharedTransitionScope.PlaceHolderSize.animatedSize
                                     )
-                                ,
-                                contentAlignment = Alignment.TopCenter
-                            ) {
+                                    .clip(shape = RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp)),
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(state.detailsCharacter.imageStr)
+                                    .crossfade(true)
+                                    .diskCacheKey("image-${state.detailsCharacter.id}")
+                                    .memoryCacheKey("image-${state.detailsCharacter.id}")
+                                    .placeholderMemoryCacheKey("image-${state.detailsCharacter.id}")
+                                    .build(),
+                                onLoading = {},
+                                onSuccess = {},
+                                onError = {},
+                                contentDescription = null,
+                            )
 
-                                SubcomposeAsyncImage(
-                                    modifier = Modifier
-                                        .size(200.dp),
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(state.detailsCharacter.imageStr)
-                                        .crossfade(true)
-                                        .memoryCacheKey("image-${state.detailsCharacter.id}")
-                                        .placeholderMemoryCacheKey("image-${state.detailsCharacter.id}")
-                                        .build(),
-                                    onLoading = {},
-                                    onSuccess = {},
-                                    onError = {},
-                                    contentDescription = null,
-                                )
-
-                            }
 
                         }
-                    }
-                    Box(
-                        contentAlignment = Alignment.BottomCenter,
-                        modifier = Modifier
-                            .padding(top = 182.dp)
-                            .matchParentSize()
-                            .background(
-                                Color.DarkGray,
-                                RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
-                            )
-                            .zIndex(0f)
-                    ) {
-                        CharacterDetailsContent(state.detailsCharacter)
+                        Box(
+                            contentAlignment = Alignment.BottomCenter,
+                            modifier = Modifier
+                                .padding(top = 182.dp)
+                                .matchParentSize()
+                                .background(
+                                    Color.DarkGray,
+                                    RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+                                )
+                                .zIndex(0f)
+                        ) {
+                            CharacterDetailsContent(state.detailsCharacter)
+                        }
                     }
                 }
+                }
             }
-        }
-    )
+
+        )
+
 }
 
 @Composable
@@ -304,7 +315,6 @@ fun GenderSection(gender: Gender, modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                // Иконка гендера
                 Box(
                     modifier = Modifier
                         .size(48.dp)
@@ -339,7 +349,6 @@ fun GenderSection(gender: Gender, modifier: Modifier = Modifier) {
                 }
             }
 
-            // Дополнительный декоративный элемент
             Text(
                 text = genderSymbol(gender),
                 style = MaterialTheme.typography.displaySmall,
@@ -354,10 +363,10 @@ fun GenderSection(gender: Gender, modifier: Modifier = Modifier) {
 @Composable
 fun genderColor(gender: Gender): Color {
     return when (gender) {
-        Gender.MALE -> Color(0xFF2196F3) // Синий
-        Gender.FEMALE -> Color(0xFFE91E63) // Розовый
-        Gender.GENDERLESS -> Color(0xFF9C27B0) // Фиолетовый
-        Gender.UNKNOWN -> Color(0xFF9E9E9E) // Серый
+        Gender.MALE -> Color(0xFF2196F3)
+        Gender.FEMALE -> Color(0xFFE91E63)
+        Gender.GENDERLESS -> Color(0xFF9C27B0)
+        Gender.UNKNOWN -> Color(0xFF9E9E9E)
     }
 }
 

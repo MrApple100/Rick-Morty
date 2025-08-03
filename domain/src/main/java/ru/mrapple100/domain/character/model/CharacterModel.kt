@@ -18,4 +18,8 @@ data class CharacterModel(
     val episode: List<String> = emptyList(),
     val url: String ="",
     val created: String = ""
-)
+){
+    override fun equals(other: Any?): Boolean {
+        return other is CharacterModel && other.id == id
+    }
+}

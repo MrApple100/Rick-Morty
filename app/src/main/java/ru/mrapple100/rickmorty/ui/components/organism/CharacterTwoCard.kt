@@ -1,6 +1,7 @@
 package ru.mrapple100.rickmorty.ui.components.organism
 
 import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Row
@@ -15,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import ru.mrapple100.domain.character.model.CharacterCardModel
 import ru.mrapple100.domain.character.model.CharacterModel
 
-@OptIn(ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun CharacterTwoCard(
     one: CharacterCardModel? = null,

@@ -1,8 +1,16 @@
 package ru.mrapple100.rickmorty.ui.components.organism
 
 import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.EnterExitState
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,9 +29,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -43,54 +53,80 @@ import ru.mrapple100.rickmorty.LocalSharedTransitionScope
 import ru.mrapple100.rickmorty.R
 import ru.mrapple100.rickmorty.ui.components.shimmer.ShimmerBox
 import ru.mrapple100.rickmorty.ui.components.shimmer.ShimmerThemes
+import ru.mrapple100.rickmorty.ui.pages.characterdetails.nonSpatialExpressiveSpring
+import ru.mrapple100.rickmorty.ui.pages.characterdetails.snackDetailBoundsTransform
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
+@ExperimentalAnimationApi
 @Composable
 fun CharacterCard(
     characterModel: CharacterCardModel,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
     ) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
-        onClick = onClick
-    ) {
-        Column(
-            modifier = Modifier
-                .wrapContentWidth(align = Alignment.CenterHorizontally)
-                .wrapContentHeight(align = Alignment.CenterVertically)
-                .padding(8.dp)
+    val sharedTransitionScope =
+        LocalSharedTransitionScope.current
+            ?: throw IllegalStateException("No Scope found")
+    val animatedContentScope = LocalAnimatedVisibilityScope.current
+        ?: throw IllegalStateException("No Scope found")
+
+    with(sharedTransitionScope) {
+        val roundedCornerAnimation by animatedContentScope.transition
+            .animateDp(label = "rounded corner") { enterExit: EnterExitState ->
+                when (enterExit) {
+                    EnterExitState.PreEnter -> 0.dp
+                    EnterExitState.Visible -> 10.dp
+                    EnterExitState.PostExit -> 10.dp
+                }
+            }
+
+        Card(
+            modifier = modifier
+                .sharedBounds(
+                    rememberSharedContentState(key = "container + ${characterModel.id}"),
+                    animatedVisibilityScope = animatedContentScope,
+                    clipInOverlayDuringTransition = OverlayClip(
+                        RoundedCornerShape(
+                            roundedCornerAnimation,
+                        ),
+                    ),
+                    exit = fadeOut(nonSpatialExpressiveSpring()),
+                    enter = fadeIn(nonSpatialExpressiveSpring()),
+                    boundsTransform = snackDetailBoundsTransform,
+                    resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
+                )
+                ,
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(4.dp),
+            onClick = onClick
         ) {
-            val sharedTransitionScope = LocalSharedTransitionScope.current ?: throw IllegalStateException("No Scope found")
-            val animatedContentScope = LocalAnimatedVisibilityScope.current ?: throw IllegalStateException("No Scope found")
-            with(sharedTransitionScope) {
+            Column(
+                modifier = Modifier
+                    .wrapContentWidth(align = Alignment.CenterHorizontally)
+                    .wrapContentHeight(align = Alignment.CenterVertically)
+                    .padding(8.dp)
+            ) {
+
                 Box(
                     modifier = Modifier
-
-                        .size(100.dp)
                         .align(Alignment.CenterHorizontally)
-                        .clip(shape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp))
-                        .sharedElement(
-                            sharedTransitionScope.rememberSharedContentState(key = "image-${characterModel.id}"),
-                            animatedVisibilityScope = animatedContentScope
-                        ).sharedBounds(
-                            rememberSharedContentState(
-                                key = "image-${characterModel.id}"
-                            ),
-                            animatedVisibilityScope = animatedContentScope
-                        )
-                    ,
+                ) {
 
-                    ) {
                     AsyncImage(
                         modifier = Modifier
+                            .sharedElement(
+                                sharedContentState = sharedTransitionScope.rememberSharedContentState(
+                                    key = "image-${characterModel.id}",
+                                ),
+                                animatedVisibilityScope = animatedContentScope,
+                                )
+                            .clip(shape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp))
                             .size(100.dp),
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(characterModel.imageStr)
                             .crossfade(true)
+                            .diskCacheKey("image-${characterModel.id}")
                             .memoryCacheKey("image-${characterModel.id}")
                             .placeholderMemoryCacheKey("image-${characterModel.id}")
                             .build(),
@@ -104,39 +140,40 @@ fun CharacterCard(
                         error = painterResource(R.drawable.ic_launcher_foreground),
                         contentDescription = null,
                     )
+
                 }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-            ) {
-                Text(
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
                     modifier = Modifier
-                        .fillMaxWidth(fraction = 0.5f),
-                    textAlign = TextAlign.End,
-                    text = characterModel.name,
-                    style = MaterialTheme.typography.bodySmall,
-                    overflow = TextOverflow.Ellipsis
-
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text(
-                    text = " | ",
-                    style = MaterialTheme.typography.bodySmall,
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth(fraction = 0.5f),
+                        textAlign = TextAlign.End,
+                        text = characterModel.name,
+                        style = MaterialTheme.typography.bodySmall,
+                        overflow = TextOverflow.Ellipsis
 
                     )
-                Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
 
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    text = characterModel.species,
-                    style = MaterialTheme.typography.bodySmall,
-                    overflow = TextOverflow.Ellipsis
+                    Text(
+                        text = " | ",
+                        style = MaterialTheme.typography.bodySmall,
 
-                )
+                        )
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        text = characterModel.species,
+                        style = MaterialTheme.typography.bodySmall,
+                        overflow = TextOverflow.Ellipsis
+
+                    )
+                }
             }
         }
     }

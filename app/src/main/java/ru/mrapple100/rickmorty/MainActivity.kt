@@ -7,6 +7,11 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.*
@@ -69,7 +74,11 @@ private fun addLibrary(navController: NavHostController) {
             NavHost(navController, startDestination = Screen.List.route) {
 
 
-                composable(route = Screen.List.route) {
+                composable(route = Screen.List.route,
+                    enterTransition = { fadeIn() },
+                    exitTransition = { fadeOut() }
+                ) {
+
                     CompositionLocalProvider(
                         LocalAnimatedVisibilityScope provides this@composable,
                     ) {
@@ -96,6 +105,8 @@ private fun addLibrary(navController: NavHostController) {
                 }
                 composable(
                     route = Screen.Details.route,
+                    enterTransition = { fadeIn()},
+                    exitTransition = { fadeOut() },
                     arguments = listOf(
                         navArgument(name = "characterId") {
                             type = NavType.IntType

@@ -51,14 +51,8 @@ class CharacterDetailsViewModel @Inject constructor(
         intent {
             loadJob?.cancel()
             loadJob = viewModelScope.launch(Dispatchers.IO) {
-                reduce {
-                    state.copy(
-                        status = UiStatus.Loading,
-                        detailsCharacter = CharacterModel()
-                    )
-                }
+
                 loadCharacterDetailsUseCase(id).collect{details ->
-                    delay(1000)
                         if (details != null) {
                             reduce {
                                 state.copy(

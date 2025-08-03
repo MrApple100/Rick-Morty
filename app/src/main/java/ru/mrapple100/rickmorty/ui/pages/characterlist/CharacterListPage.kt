@@ -27,12 +27,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import ru.mrapple100.domain.character.model.CharacterCardModel
 import ru.mrapple100.domain.character.model.CharacterModel
 import ru.mrapple100.rickmorty.LocalAnimatedVisibilityScope
+import ru.mrapple100.rickmorty.LocalSharedTransitionScope
 import ru.mrapple100.rickmorty.ui.common.UiStatus
 import ru.mrapple100.rickmorty.ui.components.molecules.ErrorMessage
 import ru.mrapple100.rickmorty.ui.components.molecules.LoadingIndicator
@@ -52,19 +54,37 @@ fun CharacterListPage(
     onRefresh:() -> Unit
 
 ) {
+    val sharedTransitionScope =
+        LocalSharedTransitionScope.current ?: throw IllegalStateException("No Scope found")
+    val animatedContentScope = LocalAnimatedVisibilityScope.current
+        ?: throw IllegalStateException("No Scope found")
     Scaffold(
         topBar = {
-            TopBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            )
+            with(sharedTransitionScope) {
+                TopBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .renderInSharedTransitionScopeOverlay(zIndexInOverlay = 5f)
+                        .sharedElement(
+                            sharedContentState = sharedTransitionScope.rememberSharedContentState(key = "topBar"),
+                            animatedVisibilityScope = animatedContentScope,
+                            zIndexInOverlay = 5f
+                        )
+                        .sharedBounds(
+                            sharedContentState = sharedTransitionScope.rememberSharedContentState(key = "topBar"),
+                            animatedVisibilityScope = animatedContentScope,
+                            zIndexInOverlay = 5f
+
+                        )
+                )
+            }
         },
-        content = {
+        content = { innerPading ->
             Box(
                 modifier = Modifier
+                    .padding(innerPading)
                     .fillMaxSize()
-                    .padding(it)
             ) {
                 val listState = rememberLazyListState()
                 val isFocused by listState.interactionSource.interactions

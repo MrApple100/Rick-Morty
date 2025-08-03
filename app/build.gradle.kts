@@ -80,8 +80,12 @@ dependencies {
 
     implementation (libs.androidx.palette.ktx)
 
+    //animation
+    implementation(libs.androidx.compose.animation)
+
     // Navigation Compose
     implementation (libs.androidx.navigation)
+    implementation(libs.accompanist.navigation.animation)
 
     //Shimmer
     implementation(libs.compose.shimmer)
