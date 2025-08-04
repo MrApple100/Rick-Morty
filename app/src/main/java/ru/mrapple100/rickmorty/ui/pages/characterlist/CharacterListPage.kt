@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -62,10 +66,10 @@ fun CharacterListPage(
         topBar = {
             with(sharedTransitionScope) {
                 TopBar(
+                    content = null,
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .renderInSharedTransitionScopeOverlay(zIndexInOverlay = 5f)
                         .sharedElement(
                             sharedContentState = sharedTransitionScope.rememberSharedContentState(key = "topBar"),
                             animatedVisibilityScope = animatedContentScope,
@@ -81,90 +85,100 @@ fun CharacterListPage(
             }
         },
         content = { innerPading ->
-            Box(
-                modifier = Modifier
-                    .padding(innerPading)
-                    .fillMaxSize()
-            ) {
-                val listState = rememberLazyListState()
-                val isFocused by listState.interactionSource.interactions
-                    .filterIsInstance<DragInteraction>()
-                    .map { dragInteraction ->
-                        dragInteraction is DragInteraction.Stop
-                    }
-                    .collectAsState(false)
-                LaunchedEffect(isFocused) {
-                    if (state.status == UiStatus.Success && listState.isScrolledToTheEnd()) {
-                        onScrollDown()
-                    }
-                }
-                PullToRefreshBox (
-                    isRefreshing = state.status==UiStatus.Loading,
-                    onRefresh = {
-                        onRefresh()
-                    },
+            with(sharedTransitionScope) {
+
+                Box(
                     modifier = Modifier
+                        .padding(innerPading)
                         .fillMaxSize()
+
                 ) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        state = listState
-                    ) {
-                        item {
-                            SearchBar(
-                                searchText = state.searchText,
-                                onChangedSearchText = { onSearchCharacter(it) },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp)
-                            )
+                    val listState = rememberLazyListState()
+                    val isFocused by listState.interactionSource.interactions
+                        .filterIsInstance<DragInteraction>()
+                        .map { dragInteraction ->
+                            dragInteraction is DragInteraction.Stop
                         }
-
-                        when(state.status) {
-                            is UiStatus.Success,
-                            is UiStatus.ScrollLoading -> {
-                                setupTwoGrid(state.detailsList) { one, two ->
-                                    CharacterTwoCard(
-
-                                        one = one,
-                                        onClickedOne = { one?.let { onShowDetail(it.id) } },
-                                        two = two,
-                                        onClickedTwo = { two?.let { onShowDetail(it.id) } },
-                                        modifier = Modifier
-                                            .height(150.dp)
-                                            .fillMaxWidth()
-                                            .padding(horizontal = 8.dp)
-                                            .padding(bottom = 8.dp)
-                                    )
-                                }
-                            }
-                            is UiStatus.Loading -> {
-                                items(
-                                    count = state.detailsList.size.coerceIn(5,10)
-                                ){
-                                        ShimmeredCharacterTwoCard(modifier = Modifier
-                                            .height(150.dp)
-                                            .fillMaxWidth()
-                                            .padding(horizontal = 8.dp)
-                                            .padding(bottom = 8.dp))
-                                }
-                            }
-
-                            is UiStatus.Failed -> {}
+                        .collectAsState(false)
+                    LaunchedEffect(isFocused) {
+                        if (state.status == UiStatus.Success && listState.isScrolledToTheEnd()) {
+                            onScrollDown()
                         }
                     }
+                    PullToRefreshBox(
+                        isRefreshing = state.status == UiStatus.Loading,
+                        onRefresh = {
+                            onRefresh()
+                        },
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            state = listState
+                        ) {
+                            item {
+                                SearchBar(
+                                    searchText = state.searchText,
+                                    onChangedSearchText = { onSearchCharacter(it) },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                )
+                            }
 
-                    when (val status = state.status) {
-                        is UiStatus.Loading,
-                        is UiStatus.ScrollLoading -> {}
-                        is UiStatus.Failed -> {
-                            ErrorMessage(
-                                message = status.message,
-                                modifier = Modifier.fillMaxSize()
-                            )
+                            when (state.status) {
+                                is UiStatus.Success,
+                                is UiStatus.ScrollLoading -> {
+                                    setupTwoGrid(state.detailsList) { one, two ->
+                                        CharacterTwoCard(
+
+                                            one = one,
+                                            onClickedOne = { one?.let { onShowDetail(it.id) } },
+                                            two = two,
+                                            onClickedTwo = { two?.let { onShowDetail(it.id) } },
+                                            modifier = Modifier
+                                                .height(150.dp)
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 8.dp)
+                                                .padding(bottom = 8.dp)
+                                        )
+                                    }
+                                }
+
+                                is UiStatus.Loading -> {
+                                    items(
+                                        count = state.detailsList.size.coerceIn(5, 10)
+                                    ) {
+                                        ShimmeredCharacterTwoCard(
+                                            modifier = Modifier
+                                                .height(150.dp)
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 8.dp)
+                                                .padding(bottom = 8.dp)
+                                        )
+                                    }
+                                }
+
+                                is UiStatus.Failed -> {}
+                            }
                         }
-                        else -> Unit
+
+                        when (val status = state.status) {
+                            is UiStatus.Loading,
+                            is UiStatus.ScrollLoading -> {
+                            }
+
+                            is UiStatus.Failed -> {
+                                ErrorMessage(
+                                    message = status.message,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+
+                            else -> Unit
+                        }
                     }
                 }
             }

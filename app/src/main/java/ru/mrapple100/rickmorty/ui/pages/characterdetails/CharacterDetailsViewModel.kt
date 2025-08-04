@@ -49,7 +49,7 @@ class CharacterDetailsViewModel @Inject constructor(
 
     fun fetchCharacterById(id: Int) {
         intent {
-            loadJob?.cancel()
+            //loadJob?.cancel()
             loadJob = viewModelScope.launch(Dispatchers.IO) {
 
                 loadCharacterDetailsUseCase(id).collect{details ->
@@ -61,6 +61,7 @@ class CharacterDetailsViewModel @Inject constructor(
                                 )
                             }
                         }else{
+                            delay(2000)
                             reduce {
                                 state.copy(
                                     status = UiStatus.Failed("no no no mr fish"),

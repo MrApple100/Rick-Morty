@@ -59,15 +59,36 @@ class CharacterRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun getCharacterById(id:Int): Flow<CharacterModel?> = flow {
-        characterRemoteDataSource.getCharacter(id).handle(
-            onSuccess = { character ->
-                emit(character.mapToCharacterModel())
-            },
-            onError = {
-                emit(null)
-            }
-        )
+    //old variant
+    override suspend fun getCharacterById(id:Int): Flow<CharacterModel?> {
+        var resultFlow = flow<CharacterModel?>{emit(null)}
+
+        if(isOnline.get()) {
+            val result = characterRemoteDataSource.getCharacter(id)
+            result.handle(
+                onSuccess = { character ->
+                    isOnline.set(true)
+                    resultFlow = flow {
+                        emit(character.mapToCharacterModel())
+                    }
+                },
+                onError = {
+                    isOnline.set(false)
+
+                    resultFlow = getLocalCharacterById(id)
+                }
+            )
+        }else{
+            resultFlow = getLocalCharacterById(id)
+        }
+        return resultFlow
+    }
+
+    override suspend fun getLocalCharacterById(id: Int): Flow<CharacterModel?> = flow{
+        val result = characterLocalDataSource.getCharacterById(id)
+        Log.d("CHECKCHECK",result.character.toString())
+        emit(result.mapToCharacterModel())
+
     }
 
     override suspend fun getLocalCharacters(): Flow<List<CharacterCardModel>?> = flow {

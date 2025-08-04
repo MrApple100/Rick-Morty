@@ -1,16 +1,15 @@
 package ru.mrapple100.rickmorty.ui.components.organism
 
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,38 +22,40 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import ru.mrapple100.domain.character.model.CharacterCardModel
-import ru.mrapple100.domain.character.model.CharacterModel
 import ru.mrapple100.rickmorty.LocalAnimatedVisibilityScope
 import ru.mrapple100.rickmorty.LocalSharedTransitionScope
 import ru.mrapple100.rickmorty.R
 import ru.mrapple100.rickmorty.ui.components.shimmer.ShimmerBox
 import ru.mrapple100.rickmorty.ui.components.shimmer.ShimmerThemes
+import ru.mrapple100.rickmorty.ui.pages.characterdetails.characterDetailBoundsTransform
 import ru.mrapple100.rickmorty.ui.pages.characterdetails.nonSpatialExpressiveSpring
-import ru.mrapple100.rickmorty.ui.pages.characterdetails.snackDetailBoundsTransform
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
@@ -86,17 +87,17 @@ fun CharacterCard(
                 .sharedBounds(
                     rememberSharedContentState(key = "container + ${characterModel.id}"),
                     animatedVisibilityScope = animatedContentScope,
-                    clipInOverlayDuringTransition = OverlayClip(
-                        RoundedCornerShape(
-                            roundedCornerAnimation,
-                        ),
-                    ),
-                    exit = fadeOut(nonSpatialExpressiveSpring()),
-                    enter = fadeIn(nonSpatialExpressiveSpring()),
-                    boundsTransform = snackDetailBoundsTransform,
-                    resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
+//                    clipInOverlayDuringTransition = OverlayClip(
+//                        RoundedCornerShape(
+//                            roundedCornerAnimation,
+//                        ),
+//                    ),
+                    exit = fadeOut(tween(0)),
+                    enter = fadeIn(tween(0)),
+                    //boundsTransform = characterDetailBoundsTransform,
                 )
-                ,
+                .border(2.dp, Color.Blue)
+            ,
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(4.dp),
             onClick = onClick
@@ -118,11 +119,13 @@ fun CharacterCard(
                             .sharedElement(
                                 sharedContentState = sharedTransitionScope.rememberSharedContentState(
                                     key = "image-${characterModel.id}",
+
                                 ),
                                 animatedVisibilityScope = animatedContentScope,
                                 )
                             .clip(shape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp))
-                            .size(100.dp),
+                            .size(100.dp)
+                            ,
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(characterModel.imageStr)
                             .crossfade(true)

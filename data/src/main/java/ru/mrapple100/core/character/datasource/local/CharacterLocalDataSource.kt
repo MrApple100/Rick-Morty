@@ -16,6 +16,9 @@ class CharacterLocalDataSource @Inject constructor(
     suspend fun getCharacters(page:Int): List<CharacterWithImage> {
         return characterDao.getCharacters(page)
     }
+    suspend fun getCharacterById(id:Int):CharacterWithImage{
+        return characterDao.getCharacterById(id)
+    }
     suspend fun insertCharacters(entities: List<CharacterEntity>){
         characterDao.insertEntities(entities)
     }

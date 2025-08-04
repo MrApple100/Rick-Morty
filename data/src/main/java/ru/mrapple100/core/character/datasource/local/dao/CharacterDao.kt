@@ -18,6 +18,10 @@ interface CharacterDao {
     @Query("SELECT * FROM characterEntity WHERE page=:page")
     suspend fun getCharacters(page:Int): List<CharacterWithImage>
 
+    @Transaction
+    @Query("SELECT * FROM characterEntity WHERE id=:id")
+    suspend fun getCharacterById(id:Int): CharacterWithImage
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEntities(entities: List<CharacterEntity>)
 

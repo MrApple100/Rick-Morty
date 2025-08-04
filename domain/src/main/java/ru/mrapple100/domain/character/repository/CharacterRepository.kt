@@ -8,6 +8,7 @@ interface CharacterRepository {
     suspend fun getCharacters(from:Int,to:Int): Flow<List<CharacterCardModel>?>
     suspend fun getCharacters():Flow<List<CharacterCardModel>?>
     suspend fun getCharacterById(id:Int):Flow<CharacterModel?>
+    suspend fun getLocalCharacterById(id:Int):Flow<CharacterModel?>
     suspend fun fetchAndSaveCharacters(): Flow<List<CharacterCardModel>?>
 
     suspend fun upPage():Int

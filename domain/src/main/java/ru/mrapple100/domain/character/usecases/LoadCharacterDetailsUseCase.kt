@@ -9,6 +9,6 @@ class LoadCharacterDetailsUseCase @Inject constructor(
     private val characterRepository: CharacterRepository
 ) {
     suspend operator fun invoke(id:Int):Flow<CharacterModel?>{
-        return characterRepository.getCharacterById(id)
+        return characterRepository.getLocalCharacterById(id)
     }
 }
