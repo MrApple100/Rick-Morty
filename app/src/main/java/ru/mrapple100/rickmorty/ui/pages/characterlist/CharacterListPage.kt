@@ -25,6 +25,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
@@ -100,6 +103,16 @@ fun CharacterListPage(
                             dragInteraction is DragInteraction.Stop
                         }
                         .collectAsState(false)
+                    var isScrolling by remember { mutableStateOf(false) }
+                    var scrollSharedKey by remember { mutableStateOf<String>( "")}
+                    LaunchedEffect(listState.isScrollInProgress) {
+                        isScrolling = listState.isScrollInProgress
+                        scrollSharedKey = if(isScrolling){
+                           "cancel"
+                        }else{
+                            ""
+                        }
+                    }
                     LaunchedEffect(isFocused) {
                         if (state.status == UiStatus.Success && listState.isScrolledToTheEnd()) {
                             onScrollDown()
@@ -134,9 +147,9 @@ fun CharacterListPage(
                                     setupTwoGrid(state.detailsList) { one, two ->
                                         CharacterTwoCard(
 
-                                            one = one,
+                                            one = one?.apply { sharedKey =  scrollSharedKey },
                                             onClickedOne = { one?.let { onShowDetail(it.id) } },
-                                            two = two,
+                                            two = two?.apply { sharedKey =  scrollSharedKey },
                                             onClickedTwo = { two?.let { onShowDetail(it.id) } },
                                             modifier = Modifier
                                                 .height(150.dp)

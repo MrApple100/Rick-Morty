@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.BoundsTransform
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.Easing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -73,19 +76,20 @@ import ru.mrapple100.rickmorty.ui.components.molecules.TopBar
 import java.util.Locale
 
 fun <T> spatialExpressiveSpring() = spring<T>(
-    dampingRatio = 0.8f,
-    stiffness = 380f,
+    dampingRatio = Spring.DampingRatioMediumBouncy,
+    stiffness = Spring.StiffnessMedium,
 )
+fun <T> nonSpatialExpressiveSpring() = tween<T>(
+    durationMillis = 200,
+    delayMillis = 0,
+    easing = LinearOutSlowInEasing
 
-fun <T> nonSpatialExpressiveSpring() = spring<T>(
-    dampingRatio = 1f,
-    stiffness = 1600f,
 )
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 val characterDetailBoundsTransform = BoundsTransform { _, _ ->
 
-    spatialExpressiveSpring()
+    nonSpatialExpressiveSpring()
 }
 
 @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
@@ -97,37 +101,38 @@ fun CharacterDetailsPage(
     val sharedTransitionScope = LocalSharedTransitionScope.current!!
     val animatedContentScope = LocalAnimatedVisibilityScope.current!!
 
+    with(sharedTransitionScope) {
 
         Scaffold(
+            modifier = Modifier
+                .sharedBounds(
+                    sharedContentState = sharedTransitionScope.rememberSharedContentState(
+                        key = "container + ${state.detailsCharacter.id}"
+                    ),
+                    animatedVisibilityScope = animatedContentScope,
+                    exit = fadeOut(nonSpatialExpressiveSpring()),
+                    enter = fadeIn(nonSpatialExpressiveSpring()),
+                    boundsTransform = characterDetailBoundsTransform,
+
+                ),
             topBar = {
                 TopBar(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                ){
+                ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        modifier = Modifier.clickable {onBackNavigate()},
+                        modifier = Modifier.clickable { onBackNavigate() },
                         contentDescription = ""
                     )
                 }
             },
             content = {
-                with(sharedTransitionScope) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(it)
-                        .sharedBounds(
-                            sharedContentState = sharedTransitionScope.rememberSharedContentState(
-                                key = "container + ${state.detailsCharacter.id}"
-                            ),
-                            animatedVisibilityScope = animatedContentScope,
-                            exit = fadeOut(tween(0)),
-                            enter = fadeIn(tween(0)),
-                           // boundsTransform = characterDetailBoundsTransform
-                        )
-                        .border(2.dp,Color.Red),
+                        .padding(it),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
@@ -173,8 +178,7 @@ fun CharacterDetailsPage(
                             modifier = Modifier
                                 .padding(top = 0.dp)
                                 .fillMaxWidth()
-                                .zIndex(3f)
-                                    ,
+                                .zIndex(3f),
                             contentAlignment = Alignment.TopCenter
                         ) {
                             SubcomposeAsyncImage(
@@ -184,7 +188,7 @@ fun CharacterDetailsPage(
                                         sharedTransitionScope.rememberSharedContentState(key = "image-${state.detailsCharacter.id}"),
                                         animatedVisibilityScope = animatedContentScope,
 
-                                       // placeHolderSize = SharedTransitionScope.PlaceHolderSize.animatedSize
+                                        // placeHolderSize = SharedTransitionScope.PlaceHolderSize.animatedSize
                                     )
                                     .clip(shape = RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp)),
                                 model = ImageRequest.Builder(LocalContext.current)
@@ -217,11 +221,11 @@ fun CharacterDetailsPage(
                         }
                     }
                 }
-                }
+
             }
 
         )
-
+    }
 }
 
 @Composable

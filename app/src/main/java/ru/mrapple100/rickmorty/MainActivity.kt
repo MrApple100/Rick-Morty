@@ -75,10 +75,10 @@ private fun addLibrary(navController: NavHostController) {
 
 
                 composable(route = Screen.List.route,
-                    enterTransition = { fadeIn(tween(0)) },
-                    exitTransition = { fadeOut(tween(0)) },
-                    popEnterTransition = { fadeIn(tween(0)) },
-                    popExitTransition = { fadeOut(tween(0)) }
+//                    enterTransition = { fadeIn(tween(0)) },
+//                    exitTransition = { fadeOut(tween(0)) },
+//                    popEnterTransition = { fadeIn(tween(0)) },
+//                    popExitTransition = { fadeOut(tween(0)) }
 
 
                 ) {
@@ -109,10 +109,10 @@ private fun addLibrary(navController: NavHostController) {
                 }
                 composable(
                     route = Screen.Details.route,
-                    enterTransition = { fadeIn(tween(0))},
-                    exitTransition = { fadeOut(tween(0)) },
-                    popEnterTransition = { fadeIn(tween(0)) },
-                    popExitTransition = { fadeOut(tween(0)) },
+//                    enterTransition = { fadeIn(tween(0))},
+//                    exitTransition = { fadeOut(tween(0)) },
+//                    popEnterTransition = { fadeIn(tween(0)) },
+//                    popExitTransition = { fadeOut(tween(0)) },
                     arguments = listOf(
                         navArgument(name = "characterId") {
                             type = NavType.IntType

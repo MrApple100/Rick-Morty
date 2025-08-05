@@ -56,6 +56,7 @@ import ru.mrapple100.rickmorty.ui.components.shimmer.ShimmerBox
 import ru.mrapple100.rickmorty.ui.components.shimmer.ShimmerThemes
 import ru.mrapple100.rickmorty.ui.pages.characterdetails.characterDetailBoundsTransform
 import ru.mrapple100.rickmorty.ui.pages.characterdetails.nonSpatialExpressiveSpring
+import ru.mrapple100.rickmorty.ui.pages.characterdetails.spatialExpressiveSpring
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
@@ -85,18 +86,13 @@ fun CharacterCard(
         Card(
             modifier = modifier
                 .sharedBounds(
-                    rememberSharedContentState(key = "container + ${characterModel.id}"),
+                    rememberSharedContentState(key = "container + ${characterModel.id}${characterModel.sharedKey}"),
                     animatedVisibilityScope = animatedContentScope,
-//                    clipInOverlayDuringTransition = OverlayClip(
-//                        RoundedCornerShape(
-//                            roundedCornerAnimation,
-//                        ),
-//                    ),
-                    exit = fadeOut(tween(0)),
-                    enter = fadeIn(tween(0)),
-                    //boundsTransform = characterDetailBoundsTransform,
+                    exit = fadeOut(nonSpatialExpressiveSpring()),
+                    enter = fadeIn(nonSpatialExpressiveSpring()),
+                    boundsTransform = characterDetailBoundsTransform,
+
                 )
-                .border(2.dp, Color.Blue)
             ,
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(4.dp),
@@ -118,11 +114,14 @@ fun CharacterCard(
                         modifier = Modifier
                             .sharedElement(
                                 sharedContentState = sharedTransitionScope.rememberSharedContentState(
-                                    key = "image-${characterModel.id}",
+                                    key = "image-${characterModel.id}${characterModel.sharedKey}",
 
                                 ),
                                 animatedVisibilityScope = animatedContentScope,
-                                )
+                                boundsTransform = characterDetailBoundsTransform,
+
+
+                            )
                             .clip(shape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp))
                             .size(100.dp)
                             ,
