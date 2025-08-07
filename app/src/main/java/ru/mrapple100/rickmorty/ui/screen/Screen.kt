@@ -10,4 +10,5 @@ sealed class Screen(val route: String) {
             return entry.arguments?.getString("characterId")?.toInt() ?: 0
         }
     }
+    object Game : Screen(route = "game")
 }

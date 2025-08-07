@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.flow
 import ru.mrapple100.core.character.datasource.CharacterMemoryDataSource
 import ru.mrapple100.core.character.datasource.local.CharacterLocalDataSource
 import ru.mrapple100.core.character.datasource.remote.CharacterRemoteDataSource
+import ru.mrapple100.core.character.mapToCharacterCardModel
 import ru.mrapple100.core.character.mapToCharacterCardModels
 import ru.mrapple100.core.character.mapToCharacterEntities
 import ru.mrapple100.core.character.mapToCharacterModel
@@ -16,6 +17,7 @@ import ru.mrapple100.domain.character.model.CharacterModel
 import ru.mrapple100.domain.character.repository.CharacterRepository
 import javax.inject.Inject
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 class CharacterRepositoryImpl @Inject constructor(
     private val characterRemoteDataSource: CharacterRemoteDataSource,
@@ -90,6 +92,12 @@ class CharacterRepositoryImpl @Inject constructor(
         emit(result.mapToCharacterModel())
 
     }
+    override suspend fun getLocalCharacterCardById(id: Int): Flow<CharacterCardModel?> = flow{
+        val result = characterLocalDataSource.getCharacterById(id)
+        Log.d("CHECKCHECK",result.character.toString())
+        emit(result.mapToCharacterCardModel())
+
+    }
 
     override suspend fun getLocalCharacters(): Flow<List<CharacterCardModel>?> = flow {
         val page = characterMemoryDataSource.getPage()
@@ -118,15 +126,29 @@ class CharacterRepositoryImpl @Inject constructor(
                 onSuccess = { resultAll ->
                     resultFlow = flow {
                         isOnline.set(true)
-                        characterMemoryDataSource.setMaxRemotePage(resultAll.info.pages)
+                        val remotePage = resultAll.info.pages
+                        characterMemoryDataSource.setMaxRemotePage(remotePage)
+
+                        val remoteСount = resultAll.info.count
+
+                        characterMemoryDataSource.setMaxRemoteCountCharacters(remoteСount)
+
+
                         val chsModels = resultAll.results.mapToCharacterModels()
                         val chsEntities = chsModels.mapToCharacterEntities(page)
                         val chCardModels = resultAll.results.mapToCharacterCardModels()
+
                         characterLocalDataSource.insertCharacters(chsEntities)
 
-                        var maxPage = characterMemoryDataSource.getMaxLocalPage()
-                        maxPage = max(page, maxPage)
-                        characterMemoryDataSource.setMaxLocalPage(maxPage)
+                        var maxLocalPage = characterMemoryDataSource.getMaxLocalPage()
+                        maxLocalPage = max(page, maxLocalPage)
+                        val countOnPage = (remoteСount.toDouble()/(remotePage)).roundToInt()
+                        if(remoteСount >= maxLocalPage * countOnPage){
+                            characterMemoryDataSource.setMaxRemoteCountCharacters(maxLocalPage * countOnPage)
+                        }else{
+                            characterMemoryDataSource.setMaxRemoteCountCharacters(remoteСount)
+                        }
+                        characterMemoryDataSource.setMaxLocalPage(maxLocalPage)
                         emit(chCardModels)
                     }
                 },
@@ -161,6 +183,13 @@ class CharacterRepositoryImpl @Inject constructor(
     }
     override suspend fun getMaxRemotePage():Int{
         return characterMemoryDataSource.getMaxRemotePage()
+    }
+
+    override suspend fun getMaxRemoteCountCharacters():Int{
+        return characterMemoryDataSource.getMaxRemoteCountCharacters()
+    }
+    override suspend fun getMaxLocalCountCharacters():Int{
+        return characterMemoryDataSource.getMaxLocalCountCharacters()
     }
 
     override suspend fun getMaxPage(): Int {

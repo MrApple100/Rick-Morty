@@ -5,12 +5,12 @@ import android.graphics.Bitmap
 //internal typealias CharacterCardModelList = List<CharacterCardModel>
 
 data class CharacterCardModel(
-    var id: Int,
-    val name: String,
-    val species: String,
-    val imageStr: String,
+    var id: Int = 0,
+    val name: String = "no info",
+    val species: String = "no info",
+    val imageStr: String = "",
     val imageBitmap: Bitmap?=null,
-    val url: String,
+    val url: String = "",
     var sharedKey:String = ""
 ) {
 

@@ -7,13 +7,9 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -23,9 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -41,6 +34,9 @@ import ru.mrapple100.rickmorty.ui.pages.characterdetails.CharacterSideEffect
 import ru.mrapple100.rickmorty.ui.pages.characterlist.CharacterListPage
 import ru.mrapple100.rickmorty.ui.pages.characterlist.CharacterListSideEffect
 import ru.mrapple100.rickmorty.ui.pages.characterlist.CharacterListViewModel
+import ru.mrapple100.rickmorty.ui.pages.gamecharacters.GameCharactersPage
+import ru.mrapple100.rickmorty.ui.pages.gamecharacters.GameCharactersSideEffect
+import ru.mrapple100.rickmorty.ui.pages.gamecharacters.GameCharactersViewModel
 import ru.mrapple100.rickmorty.ui.screen.Screen
 import ru.mrapple100.rickmorty.ui.theme.RickAndMortyTheme
 
@@ -52,10 +48,38 @@ class MainActivity : ComponentActivity() {
         setContent {
             RickAndMortyTheme {
                 window.statusBarColor = MaterialTheme.colorScheme.primaryContainer.toArgb()
-                Box(modifier = Modifier.fillMaxSize()) {
-                    val navController = rememberNavController()
-                    addLibrary(navController = navController)
-                }
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    bottomBar = {
+//                        NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
+//                            Destination.entries.forEachIndexed { index, destination ->
+//                                NavigationBarItem(
+//                                    selected = selectedDestination == index,
+//                                    onClick = {
+//                                        navController.navigate(route = destination.route)
+//                                        selectedDestination = index
+//                                    },
+//                                    icon = {
+//                                        Icon(
+//                                            destination.icon,
+//                                            contentDescription = destination.contentDescription
+//                                        )
+//                                    },
+//                                    label = { Text(destination.label) }
+//                                )
+//                            }
+//                        }
+                    },
+                    content = { innerPadding ->
+                        Box(
+                            modifier = Modifier
+                                .padding(innerPadding)
+                        ){
+                            val navController = rememberNavController()
+                            addLibrary(navController = navController)
+                        }
+                    }
+                )
             }
         }
     }
@@ -139,6 +163,36 @@ private fun addLibrary(navController: NavHostController) {
                         CharacterDetailsPage(
                             state = state,
                             onBackNavigate = { viewModel.backNavigate() }
+                        )
+                    }
+                }
+                composable(route = Screen.Game.route,
+                ) {
+                    CompositionLocalProvider(
+                        LocalAnimatedVisibilityScope provides this@composable,
+                    ) {
+                        val viewModel = hiltViewModel<GameCharactersViewModel>()
+                        val state by viewModel.collectAsState()
+                        viewModel.collectSideEffect {
+                            when (it) {
+                                is GameCharactersSideEffect.ShowWinStatus -> {
+                                    viewModel.showWinStatus()
+                                }
+                                is GameCharactersSideEffect.ShowLoseStatus -> {
+                                    viewModel.showLoseStatus()
+                                }
+                                is GameCharactersSideEffect.ChangeCharacters -> {
+                                    viewModel.changeCharacters()
+                                }
+
+                                else -> {}
+                            }
+                        }
+                        GameCharactersPage(
+                            state = state,
+                            postChangeCharacter = {viewModel.postChangeCharactersSE()},
+                            postShowWinStatus = {viewModel.postShowWinStatusSE()},
+                            postShowLoseStatus = {viewModel.postShowLoseStatusSE()}
                         )
                     }
                 }

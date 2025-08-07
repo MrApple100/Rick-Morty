@@ -37,4 +37,24 @@ class CharacterMemoryDataSource(
             putInt("maxRemotePage", maxPage)
         }
     }
+
+    suspend fun getMaxRemoteCountCharacters(): Int {
+        val sp = sharedPreferences
+        return sp.getInt("maxRemoteCountCharacters",0)
+    }
+    suspend fun setMaxRemoteCountCharacters(maxCountCharacters:Int){
+        sharedPreferences.edit(commit = true){
+            putInt("maxRemoteCountCharacters", maxCountCharacters)
+        }
+    }
+
+    suspend fun getMaxLocalCountCharacters(): Int {
+        val sp = sharedPreferences
+        return sp.getInt("maxLocalCountCharacters",0)
+    }
+    suspend fun setMaxLocalCountCharacters(maxCountCharacters:Int){
+        sharedPreferences.edit(commit = true){
+            putInt("maxLocalCountCharacters", maxCountCharacters)
+        }
+    }
 }

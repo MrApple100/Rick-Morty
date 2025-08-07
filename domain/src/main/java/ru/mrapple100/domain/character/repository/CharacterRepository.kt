@@ -21,4 +21,7 @@ interface CharacterRepository {
     suspend fun getLocalCharacters(): Flow<List<CharacterCardModel>?>
     suspend fun currentPageToOne()
     suspend fun resetIsOnlineStatus()
+    suspend fun getMaxLocalCountCharacters(): Int
+    suspend fun getMaxRemoteCountCharacters(): Int
+    suspend fun getLocalCharacterCardById(id: Int): Flow<CharacterCardModel?>
 }
