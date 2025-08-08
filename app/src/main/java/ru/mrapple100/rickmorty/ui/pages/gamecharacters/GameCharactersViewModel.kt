@@ -1,6 +1,7 @@
 package ru.mrapple100.rickmorty.ui.pages.gamecharacters
 
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -15,6 +16,7 @@ import ru.mrapple100.rickmorty.ui.pages.gamecharacters.common.GameStatus
 import javax.inject.Inject
 import kotlin.random.Random
 
+@HiltViewModel
 class GameCharactersViewModel @Inject constructor(
     val loadRandomTwoCharacterUseCase: LoadRandomTwoCharacterUseCase
 

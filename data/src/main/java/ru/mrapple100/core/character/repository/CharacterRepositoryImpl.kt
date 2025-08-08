@@ -98,6 +98,29 @@ class CharacterRepositoryImpl @Inject constructor(
         emit(result.mapToCharacterCardModel())
 
     }
+    override suspend fun getCharacterCardById(id:Int): Flow<CharacterCardModel?> {
+        var resultFlow = flow<CharacterCardModel?>{emit(null)}
+
+        if(isOnline.get()) {
+            val result = characterRemoteDataSource.getCharacter(id)
+            result.handle(
+                onSuccess = { character ->
+                    isOnline.set(true)
+                    resultFlow = flow {
+                        emit(character.mapToCharacterCardModel())
+                    }
+                },
+                onError = {
+                    isOnline.set(false)
+
+                    resultFlow = getLocalCharacterCardById(id)
+                }
+            )
+        }else{
+            resultFlow = getLocalCharacterCardById(id)
+        }
+        return resultFlow
+    }
 
     override suspend fun getLocalCharacters(): Flow<List<CharacterCardModel>?> = flow {
         val page = characterMemoryDataSource.getPage()
@@ -115,6 +138,14 @@ class CharacterRepositoryImpl @Inject constructor(
         isOnline.set(true)
     }
 
+    override suspend fun getMaxCountCharacters(): Int {
+        return if (isOnline.get()){
+            getMaxRemoteCountCharacters()
+        }else{
+            getMaxLocalCountCharacters()
+        }
+    }
+
 
     override suspend fun fetchAndSaveCharacters(): Flow<List<CharacterCardModel>?>{
         var resultFlow = flow<List<CharacterCardModel>?>{emit(null)}
@@ -130,6 +161,7 @@ class CharacterRepositoryImpl @Inject constructor(
                         characterMemoryDataSource.setMaxRemotePage(remotePage)
 
                         val remoteСount = resultAll.info.count
+                        Log.d("REMOTECOUNT", remoteСount.toString())
 
                         characterMemoryDataSource.setMaxRemoteCountCharacters(remoteСount)
 
@@ -144,23 +176,27 @@ class CharacterRepositoryImpl @Inject constructor(
                         maxLocalPage = max(page, maxLocalPage)
                         val countOnPage = (remoteСount.toDouble()/(remotePage)).roundToInt()
                         if(remoteСount >= maxLocalPage * countOnPage){
-                            characterMemoryDataSource.setMaxRemoteCountCharacters(maxLocalPage * countOnPage)
+                            characterMemoryDataSource.setMaxLocalCountCharacters(maxLocalPage * countOnPage)
                         }else{
-                            characterMemoryDataSource.setMaxRemoteCountCharacters(remoteСount)
+                            characterMemoryDataSource.setMaxLocalCountCharacters(remoteСount)
                         }
                         characterMemoryDataSource.setMaxLocalPage(maxLocalPage)
                         emit(chCardModels)
                     }
                 },
                 onError = {
+                    Log.d("REMOTECOUNT", "MEOWLOCALERROR")
 
                     isOnline.set(false)
                     resultFlow = getLocalCharacters()
                 }
             )
         }else{
+            Log.d("REMOTECOUNT", "MEOWLOCAL")
+
             resultFlow = getLocalCharacters()
         }
+
         return resultFlow
     }
 

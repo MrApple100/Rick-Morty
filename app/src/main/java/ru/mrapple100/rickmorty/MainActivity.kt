@@ -16,6 +16,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +31,7 @@ import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import ru.mrapple100.rickmorty.navigation.Destination
 import ru.mrapple100.rickmorty.ui.pages.characterdetails.CharacterDetailsPage
 import ru.mrapple100.rickmorty.ui.pages.characterdetails.CharacterDetailsViewModel
 import ru.mrapple100.rickmorty.ui.pages.characterdetails.CharacterSideEffect
@@ -42,40 +46,41 @@ import ru.mrapple100.rickmorty.ui.theme.RickAndMortyTheme
 
 @AndroidEntryPoint()
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalSharedTransitionApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             RickAndMortyTheme {
+                val navController = rememberNavController()
+                var selectedDestination by remember{ mutableIntStateOf(0) }
+
                 window.statusBarColor = MaterialTheme.colorScheme.primaryContainer.toArgb()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-//                        NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
-//                            Destination.entries.forEachIndexed { index, destination ->
-//                                NavigationBarItem(
-//                                    selected = selectedDestination == index,
-//                                    onClick = {
-//                                        navController.navigate(route = destination.route)
-//                                        selectedDestination = index
-//                                    },
-//                                    icon = {
-//                                        Icon(
-//                                            destination.icon,
-//                                            contentDescription = destination.contentDescription
-//                                        )
-//                                    },
-//                                    label = { Text(destination.label) }
-//                                )
-//                            }
-//                        }
+                        NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
+                            Destination.entries.forEachIndexed { index, destination ->
+                                NavigationBarItem(
+                                    selected = selectedDestination == index,
+                                    onClick = {
+                                        navController.navigate(route = destination.route)
+                                        selectedDestination = index
+                                    },
+                                    icon = {
+                                        Icon(
+                                            destination.icon,
+                                            contentDescription = destination.contentDescription
+                                        )
+                                    },
+                                    label = { Text(destination.label) }
+                                )
+                            }
+                        }
                     },
                     content = { innerPadding ->
                         Box(
                             modifier = Modifier
                                 .padding(innerPadding)
                         ){
-                            val navController = rememberNavController()
                             addLibrary(navController = navController)
                         }
                     }

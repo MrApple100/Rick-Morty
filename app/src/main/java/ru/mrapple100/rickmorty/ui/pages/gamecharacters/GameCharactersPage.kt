@@ -47,7 +47,7 @@ fun GameCharactersPage(
                     CharacterVerticalCard(
                         modifier = Modifier,
                         onClick = {},
-                        characterModel = state.pair.first!!
+                        characterModel = state.pair.second!!
                     )
                 }
             }
