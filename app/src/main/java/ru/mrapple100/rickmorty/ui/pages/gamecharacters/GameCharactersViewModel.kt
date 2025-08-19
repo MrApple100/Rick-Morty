@@ -2,6 +2,7 @@ package ru.mrapple100.rickmorty.ui.pages.gamecharacters
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -10,11 +11,11 @@ import org.orbitmvi.orbit.viewmodel.container
 import ru.mrapple100.domain.character.model.CharacterCardModel
 import ru.mrapple100.domain.character.usecases.LoadRandomTwoCharacterUseCase
 import ru.mrapple100.rickmorty.ui.common.UiStatus
-import ru.mrapple100.rickmorty.ui.pages.characterdetails.CharacterSideEffect
-import ru.mrapple100.rickmorty.ui.pages.characterdetails.CharacterState
+import ru.mrapple100.rickmorty.ui.pages.gamecharacters.common.ChooseUser
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.common.GameStatus
+import ru.mrapple100.rickmorty.ui.pages.gamecharacters.common.WINLOSEStatus
 import javax.inject.Inject
-import kotlin.random.Random
+import kotlin.math.max
 
 @HiltViewModel
 class GameCharactersViewModel @Inject constructor(
@@ -33,23 +34,41 @@ class GameCharactersViewModel @Inject constructor(
         }
     }
 
-    fun showWinStatus() {
+    fun showGameStatus(chooseUser: ChooseUser) {
         intent {
             reduce {
                 state.copy(
-                    gameStatus = GameStatus.WinStatus,
+                    gameStatus = GameStatus.ShowStatus(WINLOSEStatus.NONE),
                 )
             }
+            if(chooseUser == state.correct)
+                showWinStatus()
+            else
+                showLoseStatus()
         }
     }
 
-    fun showLoseStatus() {
+    private fun showWinStatus() {
         intent {
             reduce {
                 state.copy(
-                    gameStatus = GameStatus.LoseStatus
+                    gameStatus = GameStatus.ShowStatus(WINLOSEStatus.WIN),
                 )
             }
+            delay(1000)
+            changeCharacters()
+        }
+    }
+
+    private fun showLoseStatus() {
+        intent {
+            reduce {
+                state.copy(
+                    gameStatus = GameStatus.ShowStatus(WINLOSEStatus.LOSE)
+                )
+            }
+            delay(1000)
+            changeCharacters()
         }
     }
 
@@ -62,9 +81,13 @@ class GameCharactersViewModel @Inject constructor(
             }
             loadRandomTwoCharacterUseCase().collect{ chs ->
                 if(chs.first != null) {
+                    var correctCard: ChooseUser = ChooseUser.CardFirst
+                    if(chs.first!!.firstOfEpisode>chs.second!!.firstOfEpisode)
+                        correctCard = ChooseUser.CardSecond
                     reduce {
                         state.copy(
                             pair = chs,
+                            correct = correctCard,
                             gameStatus = GameStatus.ProccessStatus,
                             status = UiStatus.Success
                         )
@@ -84,16 +107,12 @@ class GameCharactersViewModel @Inject constructor(
     }
 
 
-    fun postShowWinStatusSE() {
+    fun postShowStatusSE(chooseUser: ChooseUser) {
         intent {
-            postSideEffect(GameCharactersSideEffect.ShowWinStatus())
+            postSideEffect(GameCharactersSideEffect.ShowStatus(chooseUser))
         }
     }
-    fun postShowLoseStatusSE() {
-        intent {
-            postSideEffect(GameCharactersSideEffect.ShowLoseStatus())
-        }
-    }
+
     fun postChangeCharactersSE() {
         intent {
             postSideEffect(GameCharactersSideEffect.ChangeCharacters())

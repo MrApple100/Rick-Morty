@@ -11,6 +11,7 @@ data class CharacterCardModel(
     val imageStr: String = "",
     val imageBitmap: Bitmap?=null,
     val url: String = "",
+    val firstOfEpisode:Int = 0,
     var sharedKey:String = ""
 ) {
 

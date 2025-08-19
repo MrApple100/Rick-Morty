@@ -30,15 +30,14 @@ open class CardStackController(
     val rotation = Animatable(0f)
     val scale = Animatable(0.8f)
 
-    var onSwipeLeft: () -> Unit = {}
-    var onSwipeRight: () -> Unit = {}
+    var onSwipe: () -> Unit = {}
 
     fun swipeLeft() {
         scope.apply {
             launch {
                 offsetX.animateTo(-screenWidth, animationSpec)
 
-                onSwipeLeft()
+                onSwipe()
 
                 launch {
                     offsetX.snapTo(center.x)
@@ -68,7 +67,7 @@ open class CardStackController(
             launch {
                 offsetX.animateTo(screenWidth, animationSpec)
 
-                onSwipeRight()
+                onSwipe()
 
                 launch {
                     offsetX.snapTo(center.x)

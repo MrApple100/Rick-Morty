@@ -21,8 +21,9 @@ fun CharacterResponse.mapToCharacterCardModel():CharacterCardModel{
         this.species,
         this.image,
         null,
-        this.url
-    )
+        this.url,
+        this.episode[0].split("/").last().toInt()
+        )
 }
 fun CharacterResponse.mapToCharacterModel():CharacterModel{
     return CharacterModel(
@@ -95,6 +96,7 @@ fun CharacterWithImage.mapToCharacterCardModel():CharacterCardModel{
         imageStr = this.character.imageUrl,
         imageBitmap = this.image?.imageBitmap?.toBitmap(),
         url = this.character.url,
+        firstOfEpisode = this.character.episode[0].split("/").last().toInt()
 
     )
 }

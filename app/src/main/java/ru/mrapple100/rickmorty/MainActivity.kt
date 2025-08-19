@@ -180,12 +180,10 @@ private fun addLibrary(navController: NavHostController) {
                         val state by viewModel.collectAsState()
                         viewModel.collectSideEffect {
                             when (it) {
-                                is GameCharactersSideEffect.ShowWinStatus -> {
-                                    viewModel.showWinStatus()
+                                is GameCharactersSideEffect.ShowStatus -> {
+                                    viewModel.showGameStatus(it.chooseUser)
                                 }
-                                is GameCharactersSideEffect.ShowLoseStatus -> {
-                                    viewModel.showLoseStatus()
-                                }
+
                                 is GameCharactersSideEffect.ChangeCharacters -> {
                                     viewModel.changeCharacters()
                                 }
@@ -196,8 +194,7 @@ private fun addLibrary(navController: NavHostController) {
                         GameCharactersPage(
                             state = state,
                             postChangeCharacter = {viewModel.postChangeCharactersSE()},
-                            postShowWinStatus = {viewModel.postShowWinStatusSE()},
-                            postShowLoseStatus = {viewModel.postShowLoseStatusSE()}
+                            postShowStatus = {chooseUser -> viewModel.postShowStatusSE(chooseUser)},
                         )
                     }
                 }
