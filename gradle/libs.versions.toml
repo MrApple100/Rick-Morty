@@ -25,6 +25,7 @@ roomRuntime = "2.7.2"
 squareupRetrofitVersion = "2.11.0"
 ui = "1.7.0"
 navigation_compose_version = "2.7.7"
+constraintlayoutCompose = "1.1.1"
 
 
 
@@ -64,6 +65,7 @@ orbit-core = { module = "org.orbit-mvi:orbit-core", version.ref = "orbitCore" }
 orbit-test = { module = "org.orbit-mvi:orbit-test", version.ref = "orbitCore" }
 orbit-viewmodel = { module = "org.orbit-mvi:orbit-viewmodel", version.ref = "orbitCore" }
 androidx-navigation = {module = "androidx.navigation:navigation-compose", version.ref = "navigation_compose_version"}
+androidx-constraintlayout-compose-android = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
