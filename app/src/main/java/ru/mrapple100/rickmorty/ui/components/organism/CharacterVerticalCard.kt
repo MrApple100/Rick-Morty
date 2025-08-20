@@ -32,8 +32,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
 import ru.mrapple100.domain.character.model.CharacterCardModel
 import ru.mrapple100.rickmorty.R
+import ru.mrapple100.rickmorty.ui.components.shimmer.ShimmerBox
+import ru.mrapple100.rickmorty.ui.components.shimmer.ShimmerThemes
 import ru.mrapple100.rickmorty.ui.pages.characterdetails.characterDetailBoundsTransform
 import ru.mrapple100.rickmorty.ui.pages.characterdetails.nonSpatialExpressiveSpring
 
@@ -51,6 +55,7 @@ fun CharacterVerticalCard(
     ) {
         Column(
             modifier = Modifier
+                .padding(12.dp)
                 .wrapContentWidth(align = Alignment.CenterHorizontally)
                 .wrapContentHeight(align = Alignment.CenterVertically)
         ) {
@@ -113,6 +118,62 @@ fun CharacterVerticalCard(
                     style = MaterialTheme.typography.bodySmall,
                     overflow = TextOverflow.Ellipsis
 
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ShimmeredCharacterVerticalCard(
+    modifier: Modifier = Modifier
+) {
+    val defaultShimmer = rememberShimmer(
+        shimmerBounds = ShimmerBounds.Window,
+        theme = ShimmerThemes.defaultShimmerTheme
+    )
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(4.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(12.dp)
+                .wrapContentWidth(align = Alignment.CenterHorizontally)
+                .wrapContentHeight(align = Alignment.CenterVertically)
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+            ) {
+
+                ShimmerBox(
+                    modifier = Modifier
+                        .size(200.dp),
+                    shimmer = defaultShimmer
+
+                )
+
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                ShimmerBox(
+                    modifier = Modifier
+                        .fillMaxWidth(.5f)
+                        .height(20.dp),
+                    shimmer = defaultShimmer
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                ShimmerBox(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(20.dp),
+                    shimmer = defaultShimmer
                 )
             }
         }

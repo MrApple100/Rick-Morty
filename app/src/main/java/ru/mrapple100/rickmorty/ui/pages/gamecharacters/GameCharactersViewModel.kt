@@ -30,6 +30,12 @@ class GameCharactersViewModel @Inject constructor(
 
     init {
         intent {
+            reduce {
+                state.copy(
+                    gameStatus = GameStatus.ChangeCharactersStatus,
+                    status = UiStatus.Loading
+                )
+            }
             changeCharacters()
         }
     }
@@ -41,10 +47,13 @@ class GameCharactersViewModel @Inject constructor(
                     gameStatus = GameStatus.ShowStatus(WINLOSEStatus.NONE),
                 )
             }
-            if(chooseUser == state.correct)
+            if(chooseUser == state.currentCorrect)
                 showWinStatus()
             else
                 showLoseStatus()
+
+            delay(400)
+            changeCharacters()
         }
     }
 
@@ -55,8 +64,6 @@ class GameCharactersViewModel @Inject constructor(
                     gameStatus = GameStatus.ShowStatus(WINLOSEStatus.WIN),
                 )
             }
-            delay(1000)
-            changeCharacters()
         }
     }
 
@@ -67,8 +74,7 @@ class GameCharactersViewModel @Inject constructor(
                     gameStatus = GameStatus.ShowStatus(WINLOSEStatus.LOSE)
                 )
             }
-            delay(1000)
-            changeCharacters()
+
         }
     }
 
@@ -76,32 +82,34 @@ class GameCharactersViewModel @Inject constructor(
         intent {
             reduce {
                 state.copy(
-                    gameStatus = GameStatus.ChangeCharactersStatus
+                    gameStatus = GameStatus.ChangeCharactersStatus,
                 )
             }
-            loadRandomTwoCharacterUseCase().collect{ chs ->
-                if(chs.first != null) {
+            while (state.queuePair.size < 5) {
+                loadRandomTwoCharacterUseCase().collect { chs ->
                     var correctCard: ChooseUser = ChooseUser.CardFirst
-                    if(chs.first!!.firstOfEpisode>chs.second!!.firstOfEpisode)
+                    if (chs.first!!.firstOfEpisode > chs.second!!.firstOfEpisode)
                         correctCard = ChooseUser.CardSecond
-                    reduce {
-                        state.copy(
-                            pair = chs,
-                            correct = correctCard,
-                            gameStatus = GameStatus.ProccessStatus,
-                            status = UiStatus.Success
-                        )
-                    }
-                }else{
-                    reduce {
-                        state.copy(
-                            pair = Pair(CharacterCardModel(), CharacterCardModel()),
-                            gameStatus = GameStatus.ProccessStatus,
-                            status = UiStatus.Failed("no no no mr fish")
-                        )
-                    }
+                    state.queuePair.addLast(chs)
+                    state.queueCorrect.addLast(correctCard)
                 }
+            }
+            reduce {
+                val currentPair = state.queuePair.first()
+                val currentCorrect = state.queueCorrect.first()
+                val newQueuePair = state.queuePair
+                    newQueuePair.removeFirst()
+                val newQueueCorrect = state.queueCorrect
+                    newQueueCorrect.removeFirst()
 
+                state.copy(
+                    currentPair = currentPair,
+                    currentCorrect = currentCorrect,
+                    queuePair = newQueuePair,
+                    queueCorrect = newQueueCorrect,
+                    gameStatus = GameStatus.ProccessStatus,
+                    status = UiStatus.Success
+                )
             }
         }
     }

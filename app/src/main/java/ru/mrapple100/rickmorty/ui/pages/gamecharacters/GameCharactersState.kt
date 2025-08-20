@@ -7,9 +7,11 @@ import ru.mrapple100.rickmorty.ui.pages.gamecharacters.common.GameStatus
 
 data class GameCharactersState(
     val gameStatus: GameStatus = GameStatus.ChangeCharactersStatus,
-    val correct: ChooseUser = ChooseUser.CardFirst,
+    val queueCorrect: ArrayDeque<ChooseUser> = ArrayDeque(5),
+    val currentCorrect: ChooseUser = ChooseUser.CardFirst,
     val status: UiStatus = UiStatus.Loading,
-    val pair: Pair<CharacterCardModel?,CharacterCardModel?> = Pair(CharacterCardModel(),CharacterCardModel())
+    val queuePair: ArrayDeque<Pair<CharacterCardModel?,CharacterCardModel?>> = ArrayDeque(5),
+    val currentPair: Pair<CharacterCardModel?,CharacterCardModel?> = Pair(CharacterCardModel(),CharacterCardModel())
 
 ) {
 }
