@@ -3,8 +3,6 @@ package ru.mrapple100.core.character.datasource.remote
 import android.util.Log
 import ru.mrapple100.common.ResponseHandler
 import ru.mrapple100.core.character.datasource.remote.service.CharacterService
-import ru.mrapple100.core.character.response.CharacterResponse
-import ru.mrapple100.core.character.response.ResultAllResponse
 import javax.inject.Inject
 
 class CharacterRemoteDataSource @Inject constructor(

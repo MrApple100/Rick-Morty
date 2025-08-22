@@ -30,6 +30,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class DataSourceModule {
+
+    companion object {
+        @Singleton
+        val provideBaseUrl: String =
+            "http://79.174.81.77:8082/api/"
+    }
     @Provides
     @Singleton
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {
@@ -52,7 +58,7 @@ class DataSourceModule {
     @Provides
     internal fun providesRetrofitService(okHttpClient: OkHttpClient): CharacterService {
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://rickandmortyapi.com/api/")
+            .baseUrl(provideBaseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()

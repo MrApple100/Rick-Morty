@@ -2,11 +2,13 @@ package ru.mrapple100.core.character
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import ru.mrapple100.core.character.datasource.local.entity.CharacterEntity
 import ru.mrapple100.core.character.datasource.local.entity.ImageEntity
 import ru.mrapple100.core.character.datasource.local.entity.pojo.CharacterWithImage
 import ru.mrapple100.core.character.response.CharacterResponse
 import ru.mrapple100.core.character.response.CharacterResponseList
+import ru.mrapple100.core.di.DataSourceModule
 import ru.mrapple100.domain.character.model.CharacterCardModel
 import ru.mrapple100.domain.character.model.CharacterModel
 import ru.mrapple100.domain.character.model.Gender
@@ -19,9 +21,9 @@ fun CharacterResponse.mapToCharacterCardModel():CharacterCardModel{
         this.id,
         this.name,
         this.species,
-        this.image,
+        this.image.APIbaseurlswap(),
         null,
-        this.url,
+        this.url.APIbaseurlswap(),
         this.episode[0].split("/").last().toInt()
         )
 }
@@ -35,10 +37,10 @@ fun CharacterResponse.mapToCharacterModel():CharacterModel{
         gender = Gender.safeValueOf(this.gender),
         origin = Location(this.origin.name,this.origin.url),
         location = Location(this.location.name,this.location.url),
-        imageStr = this.image,
+        imageStr = this.image.APIbaseurlswap(),
         imageBitmap = null,
         episode = this.episode,
-        url = this.url,
+        url = this.url.APIbaseurlswap(),
         created = this.created
 
     )
@@ -52,11 +54,11 @@ fun CharacterModel.mapToCharacterEntity(page:Int):CharacterEntity{
         species = this.species,
         type = this.type,
         gender = Gender.safeValueOf(this.gender.name),
-        origin = Location(this.origin.name,this.origin.url),
-        location = Location(this.location.name,this.location.url),
-        imageUrl = this.imageStr,
+        origin = Location(this.origin.name,this.origin.url.APIbaseurlswap()),
+        location = Location(this.location.name,this.location.url.APIbaseurlswap()),
+        imageUrl = this.imageStr.APIbaseurlswap(),
         episode = this.episode,
-        url = this.url,
+        url = this.url.APIbaseurlswap(),
         created = this.created,
         page = page
     )
@@ -77,12 +79,12 @@ fun CharacterWithImage.mapToCharacterModel():CharacterModel{
         species = this.character.species,
         type = this.character.type,
         gender = Gender.safeValueOf(this.character.gender.name),
-        origin = Location(this.character.origin.name,this.character.origin.url),
-        location = Location(this.character.location.name,this.character.location.url),
-        imageStr = this.character.imageUrl,
+        origin = Location(this.character.origin.name,this.character.origin.url.APIbaseurlswap()),
+        location = Location(this.character.location.name,this.character.location.url.APIbaseurlswap()),
+        imageStr = this.character.imageUrl.APIbaseurlswap(),
         imageBitmap = this.image?.imageBitmap?.toBitmap(),
         episode = this.character.episode,
-        url = this.character.url,
+        url = this.character.url.APIbaseurlswap(),
         created = this.character.created
 
     )
@@ -93,9 +95,9 @@ fun CharacterWithImage.mapToCharacterCardModel():CharacterCardModel{
         id = this.character.id,
         name = this.character.name,
         species = this.character.species,
-        imageStr = this.character.imageUrl,
+        imageStr = this.character.imageUrl.APIbaseurlswap(),
         imageBitmap = this.image?.imageBitmap?.toBitmap(),
-        url = this.character.url,
+        url = this.character.url.APIbaseurlswap(),
         firstOfEpisode = this.character.episode[0].split("/").last().toInt()
 
     )
@@ -124,4 +126,17 @@ internal fun Bitmap.toByteArray():ByteArray{
 
 internal fun ByteArray.toBitmap():Bitmap{
     return BitmapFactory.decodeByteArray(this,0,this.size)
+}
+
+internal fun String.APIbaseurlswap():String{
+    Log.d("APISWAPSWAP",this)
+    val twopart = this.split("api/")
+    return if(twopart.size==2) {
+        val res = DataSourceModule.provideBaseUrl + this.split("api/")[1]
+        Log.d("APISWAPSWAP", res)
+        res
+    }
+    else
+        this
+
 }
