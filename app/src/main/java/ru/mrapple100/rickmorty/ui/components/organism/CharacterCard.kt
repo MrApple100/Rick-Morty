@@ -134,12 +134,12 @@ fun CharacterCard(
                             .build(),
                         placeholder = painterResource(
                             if (isSystemInDarkTheme()) {
-                                R.drawable.ic_launcher_background
+                                R.drawable.defaultrickmorty
                             } else {
-                                R.drawable.ic_launcher_foreground
+                                R.drawable.defaultrickmorty
                             }
                         ),
-                        error = painterResource(R.drawable.ic_launcher_foreground),
+                        error = painterResource(R.drawable.defaultrickmorty),
                         contentDescription = null,
                     )
 

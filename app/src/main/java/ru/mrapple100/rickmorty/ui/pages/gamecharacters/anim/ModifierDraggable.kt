@@ -72,8 +72,6 @@ fun Modifier.draggableStack(
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
 
-    val squareSize = 200.dp
-    val squareSizePx = with(density) { squareSize.toPx() }
 
     val velocityThresholdPx = with(density) {
         velocityThreshold.toPx()
@@ -82,7 +80,7 @@ fun Modifier.draggableStack(
     val thresholds = { a: Float, b: Float ->
         val threshold = thresholdConfig(a, b)
         with(density) {
-            computeThreshold(threshold, squareSizePx)
+            computeThreshold(threshold, velocityThresholdPx)
         }
     }
 

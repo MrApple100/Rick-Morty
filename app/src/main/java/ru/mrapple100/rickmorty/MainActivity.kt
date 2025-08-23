@@ -57,7 +57,8 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
+                        NavigationBar(
+                            windowInsets = NavigationBarDefaults.windowInsets,) {
                             Destination.entries.forEachIndexed { index, destination ->
                                 NavigationBarItem(
                                     selected = selectedDestination == index,
@@ -71,7 +72,8 @@ class MainActivity : ComponentActivity() {
                                             contentDescription = destination.contentDescription
                                         )
                                     },
-                                    label = { Text(destination.label) }
+                                    label = { Text(destination.label) },
+
                                 )
                             }
                         }

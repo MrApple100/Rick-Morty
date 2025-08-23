@@ -14,10 +14,10 @@ class LoadRandomTwoCharacterUseCase  @Inject constructor(
 ){
     suspend operator fun invoke(): Flow<Pair<CharacterCardModel?, CharacterCardModel?>> {
         val maxCount = characterRepository.getMaxCountCharacters()
-        val localRange = Pair<Int,Int>(0, maxCount)
+        val localRange = Pair<Int,Int>(1, maxCount)
         val random = Random(System.currentTimeMillis())
         val firstId = random.nextInt(localRange.first,localRange.second)
-        var secondId:Int = 0
+        var secondId:Int = 1
         do {
             secondId = random.nextInt(localRange.first,localRange.second)
         }while (firstId==secondId)

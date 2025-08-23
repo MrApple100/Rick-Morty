@@ -26,6 +26,7 @@ import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -41,6 +42,7 @@ import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.visible
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.common.ChooseUser
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.common.GameStatus
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.common.WINLOSEStatus
+import ru.mrapple100.rickmorty.ui.theme.Colors
 
 @Composable
 fun GameCharactersPage(
@@ -75,6 +77,7 @@ fun GameCharactersPage(
             ) {
                 Text(
                     "Кто появился раньше?",
+                    fontSize = 14.sp,
                     textAlign = TextAlign.Center
                 )
             }
@@ -100,7 +103,7 @@ fun GameCharactersPage(
                                 modifier = Modifier
                                     .draggableStack(
                                         controller = cardStackController,
-                                        velocityThreshold = 80.dp
+                                        velocityThreshold = 100.dp
                                     )
                                     .moveTo(
                                         x = cardStackController.offsetX.value,
@@ -127,7 +130,7 @@ fun GameCharactersPage(
                                 modifier = Modifier
                                     .draggableStack(
                                         controller = cardStackController2,
-                                        velocityThreshold = 80.dp
+                                        velocityThreshold = 100.dp
                                     )
                                     .visible(visibleCardState2)
                                     .moveTo(
@@ -198,7 +201,7 @@ fun GameCharactersPage(
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .blinkBackground(shouldBlink, blinkColor = colorResource(R.color.greenWin)),
+                                    .blinkBackground(shouldBlink, blinkColor = Colors.greenWin),
 
                             )
                             shouldBlink = true
@@ -207,7 +210,7 @@ fun GameCharactersPage(
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .blinkBackground(shouldBlink, blinkColor = colorResource(R.color.redLose)),
+                                    .blinkBackground(shouldBlink, blinkColor = Colors.redLose),
 
                             )
                             shouldBlink = true

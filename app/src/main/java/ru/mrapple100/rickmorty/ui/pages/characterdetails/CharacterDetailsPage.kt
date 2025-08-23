@@ -262,17 +262,19 @@ fun CharacterTypesSection(
     ) {
             Box(
                 modifier = Modifier
-                    .width(196.dp)
                     .height(30.dp)
                     .background(color = statusColor(lifeStatus), shape = CircleShape)
                     .align(Alignment.CenterVertically),
                 contentAlignment = Alignment.Center
             ) {
                     Text(
+                        modifier = Modifier
+                            .padding(8.dp,0.dp),
                         text = lifeStatus.name.uppercase() +" - " + species.uppercase(),
                         color = Color.White,
                         fontWeight = FontWeight.Medium,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
+                        overflow = TextOverflow.Ellipsis
                     )
             }
     }
@@ -459,15 +461,6 @@ fun CharacterEpisodsSection(
         .padding(horizontal = 19.dp, vertical = 16.dp)
     ) {
         EpisodeGrid(episodes)
-
-        Icon(
-            imageVector = Icons.Outlined.KeyboardArrowDown,
-            contentDescription = null,
-            tint = Color(0xEEA5A5A5),
-            modifier = Modifier
-                .size(33.dp)
-                .align(Alignment.BottomCenter)
-        )
     }
 }
 @Composable
@@ -483,12 +476,6 @@ fun EpisodeGrid(episodes: List<String>, modifier: Modifier = Modifier) {
     }
 
     Column(modifier = modifier) {
-        Text(
-            text = "Episodes",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
-        )
 
         if (extractedNumbers.isEmpty() || extractedNumbers.all { it == -1 }) {
             Text(
