@@ -129,11 +129,9 @@ internal fun ByteArray.toBitmap():Bitmap{
 }
 
 internal fun String.APIbaseurlswap():String{
-    Log.d("APISWAPSWAP",this)
     val twopart = this.split("api/")
     return if(twopart.size==2) {
         val res = DataSourceModule.provideBaseUrl + this.split("api/")[1]
-        Log.d("APISWAPSWAP", res)
         res
     }
     else

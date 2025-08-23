@@ -142,7 +142,22 @@ fun CharacterListPage(
                             }
 
                             when (state.status) {
-                                is UiStatus.Success,
+                                is UiStatus.Success -> {
+                                    setupTwoGrid(state.detailsList) { one, two ->
+                                        CharacterTwoCard(
+
+                                            one = one?.apply { sharedKey =  scrollSharedKey },
+                                            onClickedOne = { one?.let { onShowDetail(it.id) } },
+                                            two = two?.apply { sharedKey =  scrollSharedKey },
+                                            onClickedTwo = { two?.let { onShowDetail(it.id) } },
+                                            modifier = Modifier
+                                                .height(150.dp)
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 8.dp)
+                                                .padding(bottom = 8.dp)
+                                        )
+                                    }
+                                }
                                 is UiStatus.ScrollLoading -> {
                                     setupTwoGrid(state.detailsList) { one, two ->
                                         CharacterTwoCard(
@@ -156,6 +171,13 @@ fun CharacterListPage(
                                                 .fillMaxWidth()
                                                 .padding(horizontal = 8.dp)
                                                 .padding(bottom = 8.dp)
+                                        )
+                                    }
+                                    item{
+                                        LoadingIndicator(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(50.dp)
                                         )
                                     }
                                 }
@@ -180,8 +202,7 @@ fun CharacterListPage(
 
                         when (val status = state.status) {
                             is UiStatus.Loading,
-                            is UiStatus.ScrollLoading -> {
-                            }
+                            is UiStatus.ScrollLoading -> {}
 
                             is UiStatus.Failed -> {
                                 ErrorMessage(

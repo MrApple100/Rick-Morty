@@ -2,8 +2,6 @@ package ru.mrapple100.core.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
-import android.util.Log
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
