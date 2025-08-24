@@ -142,6 +142,7 @@ fun CharacterListPage(
                             }
 
                             when (state.status) {
+                                is UiStatus.OnBoarding -> {}
                                 is UiStatus.Success -> {
                                     setupTwoGrid(state.detailsList) { one, two ->
                                         CharacterTwoCard(

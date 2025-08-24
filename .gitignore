@@ -1,5 +1,8 @@
 *.iml
 .gradle
+*.log
+*.apk
+*.dm
 /local.properties
 /.idea/caches
 /.idea/libraries

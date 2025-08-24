@@ -64,12 +64,15 @@ dependencies {
 
 
 
+
+
     // Compose
     implementation (libs.androidx.ui)
     implementation (libs.androidx.material)
     implementation (libs.androidx.ui.tooling.preview)
     implementation (libs.androidx.lifecycle.runtime.ktx)
     implementation (libs.androidx.activity.compose)
+    implementation (libs.accompanist.pager)
 
     // Orbit
     implementation (libs.orbit.core)
@@ -84,6 +87,8 @@ dependencies {
 
     //animation
     implementation(libs.androidx.compose.animation)
+    implementation (libs.lottie.compose)
+
 
     // Navigation Compose
     implementation (libs.androidx.navigation)

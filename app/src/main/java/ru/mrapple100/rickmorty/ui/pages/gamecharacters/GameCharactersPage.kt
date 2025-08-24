@@ -1,6 +1,5 @@
 package ru.mrapple100.rickmorty.ui.pages.gamecharacters
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,14 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.SubcomposeLayout
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
+import com.google.accompanist.pager.ExperimentalPagerApi
 import ru.mrapple100.rickmorty.R
 import ru.mrapple100.rickmorty.ui.common.UiStatus
 import ru.mrapple100.rickmorty.ui.components.organism.CharacterVerticalCard
@@ -42,12 +36,16 @@ import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.visible
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.common.ChooseUser
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.common.GameStatus
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.common.WINLOSEStatus
+import ru.mrapple100.rickmorty.ui.pages.gamecharacters.onboarding.OnBoardingData
+import ru.mrapple100.rickmorty.ui.pages.gamecharacters.onboarding.OnBoardingPager
+import ru.mrapple100.rickmorty.ui.pages.gamecharacters.onboarding.rememberPagerState
 import ru.mrapple100.rickmorty.ui.theme.Colors
 
+@ExperimentalPagerApi
 @Composable
 fun GameCharactersPage(
     state: GameCharactersState,
-    postChangeCharacter: () -> Unit,
+    postEndOnBoarding: () -> Unit,
     postShowStatus: (ChooseUser) -> Unit,
 ){
     var shouldBlink by remember { mutableStateOf(false) }
@@ -84,6 +82,51 @@ fun GameCharactersPage(
         },
         content = { it ->
             when(state.status) {
+                is UiStatus.OnBoarding -> {
+
+                        val items = ArrayList<OnBoardingData>()
+
+                        items.add(
+                            OnBoardingData(
+                                R.drawable.defaultrickmorty,
+                                "Title 1",
+                                "Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface."
+                            )
+                        )
+
+                        items.add(
+                            OnBoardingData(
+                                R.drawable.defaultrickmorty,
+                                "Title 2",
+                                "Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface."
+                            )
+                        )
+
+                        items.add(
+                            OnBoardingData(
+                                R.drawable.defaultrickmorty,
+                                "Title 3",
+                                "Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface."
+                            )
+                        )
+                        val pagerState = rememberPagerState(
+                            pageCount = items.size,
+                            initialOffscreenLimit = 2,
+                            infiniteLoop = false,
+                            initialPage = 0
+                        )
+
+                        OnBoardingPager(
+                            item = items,
+                            pagerState = pagerState,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(color = Color.White),
+                            onClickSkipEnd = {
+                                postEndOnBoarding()
+                            }
+                        )
+                }
                 is UiStatus.Success -> {
                     Column(
                         modifier = Modifier

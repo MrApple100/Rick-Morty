@@ -32,12 +32,24 @@ class GameCharactersViewModel @Inject constructor(
         intent {
             reduce {
                 state.copy(
+                    status = UiStatus.OnBoarding
+                )
+            }
+        }
+    }
+
+    fun toEndOnBoarding(){
+        intent{
+            reduce{
+                state.copy(
                     gameStatus = GameStatus.ChangeCharactersStatus,
                     status = UiStatus.Loading
                 )
             }
-            changeCharacters()
+
         }
+        changeCharacters()
+
     }
 
     fun showGameStatus(chooseUser: ChooseUser) {
@@ -121,9 +133,9 @@ class GameCharactersViewModel @Inject constructor(
         }
     }
 
-    fun postChangeCharactersSE() {
+    fun postEndOnBoardingSE() {
         intent {
-            postSideEffect(GameCharactersSideEffect.ChangeCharacters())
+            postSideEffect(GameCharactersSideEffect.ToEndOnBoarding())
         }
     }
 

@@ -28,6 +28,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.hilt.android.AndroidEntryPoint
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -95,7 +96,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-@OptIn(ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalPagerApi::class)
 private fun addLibrary(navController: NavHostController) {
     SharedTransitionLayout {
         CompositionLocalProvider (
@@ -186,8 +187,8 @@ private fun addLibrary(navController: NavHostController) {
                                     viewModel.showGameStatus(it.chooseUser)
                                 }
 
-                                is GameCharactersSideEffect.ChangeCharacters -> {
-                                    viewModel.changeCharacters()
+                                is GameCharactersSideEffect.ToEndOnBoarding -> {
+                                    viewModel.toEndOnBoarding()
                                 }
 
                                 else -> {}
@@ -195,7 +196,7 @@ private fun addLibrary(navController: NavHostController) {
                         }
                         GameCharactersPage(
                             state = state,
-                            postChangeCharacter = {viewModel.postChangeCharactersSE()},
+                            postEndOnBoarding = {viewModel.postEndOnBoardingSE()},
                             postShowStatus = {chooseUser -> viewModel.postShowStatusSE(chooseUser)},
                         )
                     }
