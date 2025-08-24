@@ -68,7 +68,7 @@ fun CharacterVerticalCard(
                 AsyncImage(
                     modifier = Modifier
                         .clip(shape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp))
-                        .size(200.dp),
+                        .size(188.dp),
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(characterModel.imageStr)
                         .crossfade(true)

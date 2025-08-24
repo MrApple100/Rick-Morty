@@ -2,12 +2,14 @@ package ru.mrapple100.rickmorty.ui.pages.gamecharacters.onboarding
 
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +22,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -48,47 +51,54 @@ fun OnBoardingPager(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             HorizontalPager(
                 state = pagerState
             ) { page ->
+
                 Column(
                     modifier = Modifier
                         .padding(60.dp)
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    /* Image(
+
+                    Image(
                          painter = painterResource(id = item[page].image),
                          contentDescription = item[page].title,
                          modifier = Modifier
                              .height(250.dp)
                              .fillMaxWidth()
-                     )*/
-                    LoaderIntro(
-                        modifier = Modifier
-                            .size(200.dp)
-                            .fillMaxWidth()
-                            .align(alignment = Alignment.CenterHorizontally), item[page].image
-                    )
+                     )
+//                    LoaderIntro(
+//                        modifier = Modifier
+//                            .size(200.dp)
+//                            .fillMaxWidth()
+//                            .align(alignment = Alignment.CenterHorizontally), item[page].image
+//                    )
                     Text(
                         text = item[page].title,
-                        modifier = Modifier.padding(top = 50.dp),
-                        color = Color.Black,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(top = 50.dp).fillMaxWidth(),
                         style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
                     )
 
                     Text(
                         text = item[page].desc,
                         modifier = Modifier.padding(top = 30.dp, start = 20.dp, end = 20.dp),
-                        color = Color.Black,
                         style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
                         textAlign = TextAlign.Center
                     )
                 }
             }
 
+        }
+        Box(modifier = Modifier
+            .align(Alignment.BottomCenter)
+            .padding(bottom = 80.dp)){
             PagerIndicator(item.size, pagerState.currentPage)
         }
+
         Box(modifier = Modifier.align(Alignment.BottomCenter)) {
             BottomSection(
                 pagerState.currentPage,
@@ -160,7 +170,6 @@ fun OnBoardingPager(
     fun SkipNextButton(text: String, modifier: Modifier) {
         Text(
             text = text,
-            color = Color.Black,
             modifier = modifier,
             fontSize = 18.sp,
             style = MaterialTheme.typography.bodyLarge,

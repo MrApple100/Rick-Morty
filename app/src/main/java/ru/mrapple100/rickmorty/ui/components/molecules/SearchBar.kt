@@ -8,6 +8,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -18,21 +22,25 @@ import ru.mrapple100.rickmorty.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
-    searchText: String,
     onChangedSearchText: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var searchText by remember { mutableStateOf("") }
     Box(modifier = modifier) {
         OutlinedTextField(
             value = searchText,
-            onValueChange = onChangedSearchText,
+            onValueChange = {
+                searchText = it
+                onChangedSearchText(it)
+            },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.primary,
-                unfocusedContainerColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
+                focusedIndicatorColor = MaterialTheme.colorScheme.outline
             ),
-            label = { Text(stringResource(R.string.search)) }
+            placeholder = { Text(stringResource(R.string.search)) }
         )
     }
 }
@@ -41,7 +49,7 @@ fun SearchBar(
 @Composable
 fun SearchBar_Preview() {
     SearchBar(
-        searchText = "SEARCH TEXT",
+        //searchText = "SEARCH TEXT",
         onChangedSearchText = {},
         modifier = Modifier
             .fillMaxWidth()

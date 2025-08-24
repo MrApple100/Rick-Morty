@@ -20,7 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -74,8 +77,10 @@ fun GameCharactersPage(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    "Кто появился раньше?",
-                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .padding(16.dp),
+                    text = "Кто появился раньше?",
+                    fontSize = 28.sp,
                     textAlign = TextAlign.Center
                 )
             }
@@ -89,24 +94,34 @@ fun GameCharactersPage(
                         items.add(
                             OnBoardingData(
                                 R.drawable.defaultrickmorty,
-                                "Title 1",
-                                "Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface."
+                                "Вспомни",
+                                buildAnnotatedString {  append("Тебе необходимо вспомнить какой из персонажей появился в сериале Rick And Morty раньше!")}
                             )
                         )
 
                         items.add(
                             OnBoardingData(
                                 R.drawable.defaultrickmorty,
-                                "Title 2",
-                                "Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface."
+                                "Смахни влево или вправо",
+                                buildAnnotatedString {  append("Карточку с персонажем нужно смахнуть в сторону. Так ты сделаешь свой выбор!")}
                             )
                         )
 
                         items.add(
                             OnBoardingData(
                                 R.drawable.defaultrickmorty,
-                                "Title 3",
-                                "Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface."
+                                "Узнай правильный ответ",
+                                buildAnnotatedString {
+                                    append("После свайпа экран подсветится ")
+                                    withStyle(style = SpanStyle(color = Colors.greenWin)) {
+                                        append("зеленым")
+                                    }
+                                    append(", если ты угадал, или ")
+                                    withStyle(style = SpanStyle(color = Colors.redLose)) {
+                                        append("красным")
+                                    }
+                                    append(", если ответ оказался неправильным!")
+                                }
                             )
                         )
                         val pagerState = rememberPagerState(
@@ -120,8 +135,7 @@ fun GameCharactersPage(
                             item = items,
                             pagerState = pagerState,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .background(color = Color.White),
+                                .fillMaxSize(),
                             onClickSkipEnd = {
                                 postEndOnBoarding()
                             }

@@ -74,7 +74,9 @@ class MainActivity : ComponentActivity() {
                                         )
                                     },
                                     label = { Text(destination.label) },
-
+                                    colors = NavigationBarItemDefaults.colors(
+                                        indicatorColor = MaterialTheme.colorScheme.secondary
+                                    )
                                 )
                             }
                         }

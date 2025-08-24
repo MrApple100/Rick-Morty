@@ -142,7 +142,6 @@ fun CharacterDetailsPage(
                             if (char.isLowerCase()) char.titlecase(Locale.ROOT) else char.toString()
                         },
                         textAlign = TextAlign.Center,
-                        color = Color.White,
 
                         fontWeight = FontWeight.Medium,
                         fontSize = 22.sp
@@ -212,7 +211,7 @@ fun CharacterDetailsPage(
                                 .padding(top = 182.dp)
                                 .matchParentSize()
                                 .background(
-                                    Color.DarkGray,
+                                    MaterialTheme.colorScheme.secondary,
                                     RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
                                 )
                                 .zIndex(0f)
@@ -300,7 +299,7 @@ private fun CharacterDetailsRow(
             item {
                 SectionTitle("General Info")
                 GenderSection(characterDetails.gender)
-
+                Spacer(modifier = Modifier.height(5.dp))
                 InfoCard(characterDetails)
             }
             item {
@@ -428,9 +427,7 @@ fun InfoCard(character: CharacterModel) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
+
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             InfoRow(Icons.Default.Info, "Type", character.type.takeIf { it != "" } ?: "Unknown")
@@ -538,7 +535,7 @@ fun EpisodeChip(number: Int) {
     Surface(
         shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.primaryContainer,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         shadowElevation = 2.dp,
         modifier = Modifier.fillMaxSize()
     ) {
@@ -567,7 +564,7 @@ fun InfoRow(icon: ImageVector, label: String, value: String) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
+            tint = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.padding(top = 4.dp)
         )
         Spacer(modifier = Modifier.width(12.dp))
@@ -575,7 +572,7 @@ fun InfoRow(icon: ImageVector, label: String, value: String) {
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.8f)
             )
             Text(
                 text = value,

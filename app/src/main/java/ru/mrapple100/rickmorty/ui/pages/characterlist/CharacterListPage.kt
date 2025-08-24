@@ -126,93 +126,100 @@ fun CharacterListPage(
                         modifier = Modifier
                             .fillMaxSize()
                     ) {
-                        LazyColumn(
+                        Column(
                             modifier = Modifier
-                                .fillMaxSize(),
-                            state = listState
-                        ) {
-                            item {
-                                SearchBar(
-                                    searchText = state.searchText,
-                                    onChangedSearchText = { onSearchCharacter(it) },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp)
-                                )
+                            .fillMaxSize(),) {
+                            SearchBar(
+                               // searchText = state.searchText,
+                                onChangedSearchText = { onSearchCharacter(it) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                            )
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                                state = listState
+                            ) {
+                                item {
+
+                                }
+
+                                when (state.status) {
+                                    is UiStatus.OnBoarding -> {}
+                                    is UiStatus.Success -> {
+                                        setupTwoGrid(state.detailsList) { one, two ->
+                                            CharacterTwoCard(
+
+                                                one = one?.apply { sharedKey = scrollSharedKey },
+                                                onClickedOne = { one?.let { onShowDetail(it.id) } },
+                                                two = two?.apply { sharedKey = scrollSharedKey },
+                                                onClickedTwo = { two?.let { onShowDetail(it.id) } },
+                                                modifier = Modifier
+                                                    .height(150.dp)
+                                                    .fillMaxWidth()
+                                                    .padding(horizontal = 8.dp)
+                                                    .padding(bottom = 8.dp)
+                                            )
+                                        }
+                                    }
+
+                                    is UiStatus.ScrollLoading -> {
+                                        setupTwoGrid(state.detailsList) { one, two ->
+                                            CharacterTwoCard(
+
+                                                one = one?.apply { sharedKey = scrollSharedKey },
+                                                onClickedOne = { one?.let { onShowDetail(it.id) } },
+                                                two = two?.apply { sharedKey = scrollSharedKey },
+                                                onClickedTwo = { two?.let { onShowDetail(it.id) } },
+                                                modifier = Modifier
+                                                    .height(150.dp)
+                                                    .fillMaxWidth()
+                                                    .padding(horizontal = 8.dp)
+                                                    .padding(bottom = 8.dp)
+                                            )
+                                        }
+                                        item {
+                                            LoadingIndicator(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .height(50.dp)
+                                            )
+                                        }
+                                    }
+
+                                    is UiStatus.Loading -> {
+                                        items(
+                                            count = state.detailsList.size.coerceIn(5, 10)
+                                        ) {
+                                            ShimmeredCharacterTwoCard(
+                                                modifier = Modifier
+                                                    .height(150.dp)
+                                                    .fillMaxWidth()
+                                                    .padding(horizontal = 8.dp)
+                                                    .padding(bottom = 8.dp)
+                                            )
+                                        }
+                                    }
+
+                                    is UiStatus.Failed -> {}
+                                }
                             }
 
-                            when (state.status) {
-                                is UiStatus.OnBoarding -> {}
-                                is UiStatus.Success -> {
-                                    setupTwoGrid(state.detailsList) { one, two ->
-                                        CharacterTwoCard(
-
-                                            one = one?.apply { sharedKey =  scrollSharedKey },
-                                            onClickedOne = { one?.let { onShowDetail(it.id) } },
-                                            two = two?.apply { sharedKey =  scrollSharedKey },
-                                            onClickedTwo = { two?.let { onShowDetail(it.id) } },
-                                            modifier = Modifier
-                                                .height(150.dp)
-                                                .fillMaxWidth()
-                                                .padding(horizontal = 8.dp)
-                                                .padding(bottom = 8.dp)
-                                        )
-                                    }
-                                }
+                            when (val status = state.status) {
+                                is UiStatus.Loading,
                                 is UiStatus.ScrollLoading -> {
-                                    setupTwoGrid(state.detailsList) { one, two ->
-                                        CharacterTwoCard(
-
-                                            one = one?.apply { sharedKey =  scrollSharedKey },
-                                            onClickedOne = { one?.let { onShowDetail(it.id) } },
-                                            two = two?.apply { sharedKey =  scrollSharedKey },
-                                            onClickedTwo = { two?.let { onShowDetail(it.id) } },
-                                            modifier = Modifier
-                                                .height(150.dp)
-                                                .fillMaxWidth()
-                                                .padding(horizontal = 8.dp)
-                                                .padding(bottom = 8.dp)
-                                        )
-                                    }
-                                    item{
-                                        LoadingIndicator(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(50.dp)
-                                        )
-                                    }
                                 }
 
-                                is UiStatus.Loading -> {
-                                    items(
-                                        count = state.detailsList.size.coerceIn(5, 10)
-                                    ) {
-                                        ShimmeredCharacterTwoCard(
-                                            modifier = Modifier
-                                                .height(150.dp)
-                                                .fillMaxWidth()
-                                                .padding(horizontal = 8.dp)
-                                                .padding(bottom = 8.dp)
-                                        )
-                                    }
+                                is UiStatus.Failed -> {
+                                    ErrorMessage(
+                                        message = status.message,
+                                        modifier = Modifier.fillMaxSize()
+                                    )
                                 }
 
-                                is UiStatus.Failed -> {}
+                                else -> Unit
                             }
-                        }
-
-                        when (val status = state.status) {
-                            is UiStatus.Loading,
-                            is UiStatus.ScrollLoading -> {}
-
-                            is UiStatus.Failed -> {
-                                ErrorMessage(
-                                    message = status.message,
-                                    modifier = Modifier.fillMaxSize()
-                                )
-                            }
-
-                            else -> Unit
                         }
                     }
                 }

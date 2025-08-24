@@ -26,7 +26,7 @@ fun TopBar(
             Text(
                 text = stringResource(id = R.string.app_name),
                 textAlign = TextAlign.Left,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
                 style = MaterialTheme.typography.headlineMedium,
                 fontStyle = FontStyle.Italic,
                 fontWeight = FontWeight.Bold
