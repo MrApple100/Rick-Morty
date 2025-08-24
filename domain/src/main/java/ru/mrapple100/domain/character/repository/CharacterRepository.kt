@@ -26,4 +26,6 @@ interface CharacterRepository {
     suspend fun getMaxRemoteCountCharacters(): Int
     suspend fun getLocalCharacterCardById(id: Int): Flow<CharacterCardModel?>
     suspend fun getCharacterCardById(id: Int): Flow<CharacterCardModel?>
+    suspend fun getIsFirstTimeOnBoardingGame(): Boolean
+    suspend fun setFirstTimeOnBoardingGameEnd()
 }

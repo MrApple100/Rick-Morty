@@ -8,18 +8,18 @@ import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
-import ru.mrapple100.domain.character.model.CharacterCardModel
+import ru.mrapple100.domain.character.usecases.EndFirstOnBoardingGameUseCase
 import ru.mrapple100.domain.character.usecases.LoadRandomTwoCharacterUseCase
 import ru.mrapple100.rickmorty.ui.common.UiStatus
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.common.ChooseUser
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.common.GameStatus
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.common.WINLOSEStatus
 import javax.inject.Inject
-import kotlin.math.max
 
 @HiltViewModel
 class GameCharactersViewModel @Inject constructor(
-    val loadRandomTwoCharacterUseCase: LoadRandomTwoCharacterUseCase
+    val loadRandomTwoCharacterUseCase: LoadRandomTwoCharacterUseCase,
+    val endFirstOnBoardingGame: EndFirstOnBoardingGameUseCase
 
 ): ContainerHost<GameCharactersState, GameCharactersSideEffect>, ViewModel() {
 
@@ -30,10 +30,21 @@ class GameCharactersViewModel @Inject constructor(
 
     init {
         intent {
-            reduce {
-                state.copy(
-                    status = UiStatus.OnBoarding
-                )
+            if(endFirstOnBoardingGame()) {
+                reduce {
+                    state.copy(
+                        status = UiStatus.OnBoarding
+                    )
+                }
+                initfetchCharacters()
+            }else{
+                reduce{
+                    state.copy(
+                        gameStatus = GameStatus.ChangeCharactersStatus,
+                        status = UiStatus.Loading
+                    )
+                }
+                changeCharacters()
             }
         }
     }
@@ -46,9 +57,10 @@ class GameCharactersViewModel @Inject constructor(
                     status = UiStatus.Loading
                 )
             }
-
+            endFirstOnBoardingGame.endOnBoarding()
+            changeCharacters()
         }
-        changeCharacters()
+
 
     }
 
@@ -90,13 +102,8 @@ class GameCharactersViewModel @Inject constructor(
         }
     }
 
-    fun changeCharacters() {
+    private fun initfetchCharacters(){
         intent {
-            reduce {
-                state.copy(
-                    gameStatus = GameStatus.ChangeCharactersStatus,
-                )
-            }
             while (state.queuePair.size < 5) {
                 loadRandomTwoCharacterUseCase().collect { chs ->
                     var correctCard: ChooseUser = ChooseUser.CardFirst
@@ -110,15 +117,31 @@ class GameCharactersViewModel @Inject constructor(
                 val currentPair = state.queuePair.first()
                 val currentCorrect = state.queueCorrect.first()
                 val newQueuePair = state.queuePair
-                    newQueuePair.removeFirst()
+                newQueuePair.removeFirst()
                 val newQueueCorrect = state.queueCorrect
-                    newQueueCorrect.removeFirst()
+                newQueueCorrect.removeFirst()
 
                 state.copy(
                     currentPair = currentPair,
                     currentCorrect = currentCorrect,
                     queuePair = newQueuePair,
                     queueCorrect = newQueueCorrect,
+                    gameStatus = GameStatus.ProccessStatus,
+                )
+            }
+        }
+    }
+
+    fun changeCharacters() {
+        intent {
+            reduce {
+                state.copy(
+                    gameStatus = GameStatus.ChangeCharactersStatus,
+                )
+            }
+           initfetchCharacters()
+            reduce {
+                state.copy(
                     gameStatus = GameStatus.ProccessStatus,
                     status = UiStatus.Success
                 )

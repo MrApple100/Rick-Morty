@@ -238,5 +238,13 @@ class CharacterRepositoryImpl @Inject constructor(
         return characterMemoryDataSource.getPage()
     }
 
+    //OnBoarding
+    override suspend fun getIsFirstTimeOnBoardingGame(): Boolean{
+        return  characterMemoryDataSource.getIsFirstTimeOnBoardingGame()
+    }
+    override suspend fun setFirstTimeOnBoardingGameEnd(){
+        characterMemoryDataSource.setIsFirstTimeOnBoardingGameEnd()
+    }
+
 
 }

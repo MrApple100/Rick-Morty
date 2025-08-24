@@ -57,4 +57,15 @@ class CharacterMemoryDataSource(
             putInt("maxLocalCountCharacters", maxCountCharacters)
         }
     }
+
+    //onBoarding
+    suspend fun getIsFirstTimeOnBoardingGame(): Boolean {
+        val sp = sharedPreferences
+        return sp.getBoolean("isFirstTimeOnBoardingGame",true)
+    }
+    suspend fun setIsFirstTimeOnBoardingGameEnd(){
+        sharedPreferences.edit(commit = true){
+            putBoolean("isFirstTimeOnBoardingGame", false)
+        }
+    }
 }
