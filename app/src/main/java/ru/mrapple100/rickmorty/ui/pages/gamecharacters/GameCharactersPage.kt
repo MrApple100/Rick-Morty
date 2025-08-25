@@ -1,9 +1,9 @@
 package ru.mrapple100.rickmorty.ui.pages.gamecharacters
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,13 +12,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -26,11 +27,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.google.accompanist.pager.ExperimentalPagerApi
+import kotlinx.coroutines.CoroutineScope
+import ru.mrapple100.domain.character.model.CharacterCardModel
 import ru.mrapple100.rickmorty.R
 import ru.mrapple100.rickmorty.ui.common.UiStatus
 import ru.mrapple100.rickmorty.ui.components.organism.CharacterVerticalCard
 import ru.mrapple100.rickmorty.ui.components.organism.ShimmeredCharacterVerticalCard
+import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.CardStackController
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.blinkBackground
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.draggableStack
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.moveTo
@@ -54,6 +59,9 @@ fun GameCharactersPage(
     var shouldBlink by remember { mutableStateOf(false) }
     var visibleCardState by remember { mutableStateOf(true) }
     var visibleCardState2 by remember { mutableStateOf(true) }
+
+    var queuePairState by remember { mutableStateOf(state.queuePair) }
+
 
 
 
@@ -142,6 +150,7 @@ fun GameCharactersPage(
                         )
                 }
                 is UiStatus.Success -> {
+
                     Column(
                         modifier = Modifier
                             .padding(it)
@@ -149,61 +158,28 @@ fun GameCharactersPage(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight(fraction = 0.5f)
-                                .width(220.dp),
-
+                        Box( modifier = Modifier
+                            .fillMaxSize(),
                             contentAlignment = Alignment.Center
-                        ) {
-                            CharacterVerticalCard(
-                                modifier = Modifier
-                                    .draggableStack(
-                                        controller = cardStackController,
-                                        velocityThreshold = 100.dp
-                                    )
-                                    .moveTo(
-                                        x = cardStackController.offsetX.value,
-                                        y = cardStackController.offsetY.value
-                                    )
-                                    .visible(visibleCardState)
-                                    .graphicsLayer(
-                                        rotationZ = cardStackController.rotation.value,
-                                        //scaleX = cardStackController.scale.value,
-                                        //scaleY = cardStackController.scale.value
-                                    ),
-                                onClick = {},
-                                characterModel = state.currentPair.first!!
+                        ){
+                            TwoVerticalCard(
+                                cardStackController,
+                                cardStackController2,
+                                visibleCardState,
+                                visibleCardState2,
+                                state.currentPair.first!!,
+                                state.currentPair.second!!
                             )
+                            Box(modifier = Modifier.visible(false).zIndex(-1f)) {
+                                TwoVerticalCardWait(
+                                    state.queuePair[1].first!!,
+                                    state.queuePair[1].second!!
+                                )
+                            }
                         }
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .width(220.dp),
-                            contentAlignment = Alignment.Center
 
-                        ) {
-                            CharacterVerticalCard(
-                                modifier = Modifier
-                                    .draggableStack(
-                                        controller = cardStackController2,
-                                        velocityThreshold = 100.dp
-                                    )
-                                    .visible(visibleCardState2)
-                                    .moveTo(
-                                        x = cardStackController2.offsetX.value,
-                                        y = cardStackController2.offsetY.value
-                                    )
-                                    .graphicsLayer(
-                                        rotationZ = cardStackController2.rotation.value,
-                                        //scaleX = cardStackController2.scale.value,
-                                        //scaleY = cardStackController2.scale.value
-                                    ),
-                                onClick = {},
-                                characterModel = state.currentPair.second!!
-                            )
-                        }
                     }
+
                 }
                 is UiStatus.Loading ->{
                     Column(
@@ -277,6 +253,108 @@ fun GameCharactersPage(
                     }
                 }
             }
-        }
-    )
+        })
+
 }
+
+@Composable
+inline fun TwoVerticalCard(cardStackController: CardStackController,
+                    cardStackController2: CardStackController,
+                    visibleCardState: Boolean,
+                    visibleCardState2: Boolean,
+                    first:CharacterCardModel,
+                    second:CharacterCardModel){
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxHeight(fraction = 0.5f)
+                .width(220.dp),
+
+            contentAlignment = Alignment.Center
+        ) {
+            CharacterVerticalCard(
+                modifier = Modifier
+                    .draggableStack(
+                        controller = cardStackController,
+                        velocityThreshold = 100.dp
+                    )
+                    .moveTo(
+                        x = cardStackController.offsetX.value,
+                        y = cardStackController.offsetY.value
+                    )
+                    .visible(visibleCardState)
+                    .graphicsLayer(
+                        rotationZ = cardStackController.rotation.value,
+                        //scaleX = cardStackController.scale.value,
+                        //scaleY = cardStackController.scale.value
+                    ),
+                onClick = {},
+                characterModel = first!!
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(220.dp),
+            contentAlignment = Alignment.Center
+
+        ) {
+            CharacterVerticalCard(
+                modifier = Modifier
+                    .draggableStack(
+                        controller = cardStackController2,
+                        velocityThreshold = 100.dp
+                    )
+                    .visible(visibleCardState2)
+                    .moveTo(
+                        x = cardStackController2.offsetX.value,
+                        y = cardStackController2.offsetY.value
+                    )
+                    .graphicsLayer(
+                        rotationZ = cardStackController2.rotation.value,
+                        //scaleX = cardStackController2.scale.value,
+                        //scaleY = cardStackController2.scale.value
+                    ),
+                onClick = {},
+                characterModel = second!!
+            )
+        }
+    }
+}
+@Composable
+inline fun TwoVerticalCardWait(
+    first:CharacterCardModel,
+    second:CharacterCardModel){
+    Box(
+        modifier = Modifier
+            .fillMaxHeight(fraction = 0.5f)
+            .width(220.dp),
+
+        contentAlignment = Alignment.Center
+    ) {
+        CharacterVerticalCard(
+            onClick = {},
+            characterModel = first!!
+        )
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .width(220.dp),
+        contentAlignment = Alignment.Center
+
+    ) {
+        CharacterVerticalCard(
+
+            onClick = {},
+            characterModel = second!!
+        )
+    }
+}
+
+

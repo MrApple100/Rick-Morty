@@ -38,13 +38,7 @@ class GameCharactersViewModel @Inject constructor(
                 }
                 initfetchCharacters()
             }else{
-                reduce{
-                    state.copy(
-                        gameStatus = GameStatus.ChangeCharactersStatus,
-                        status = UiStatus.Loading
-                    )
-                }
-                changeCharacters()
+                toEndOnBoarding()
             }
         }
     }
@@ -134,11 +128,11 @@ class GameCharactersViewModel @Inject constructor(
 
     fun changeCharacters() {
         intent {
-            reduce {
-                state.copy(
-                    gameStatus = GameStatus.ChangeCharactersStatus,
-                )
-            }
+//            reduce {
+//                state.copy(
+//                    gameStatus = GameStatus.ChangeCharactersStatus,
+//                )
+//            }
            initfetchCharacters()
             reduce {
                 state.copy(
