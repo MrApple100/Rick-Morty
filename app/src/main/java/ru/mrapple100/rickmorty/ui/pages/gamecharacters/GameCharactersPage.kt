@@ -3,7 +3,6 @@ package ru.mrapple100.rickmorty.ui.pages.gamecharacters
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,11 +11,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,12 +26,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.google.accompanist.pager.ExperimentalPagerApi
-import kotlinx.coroutines.CoroutineScope
 import ru.mrapple100.domain.character.model.CharacterCardModel
 import ru.mrapple100.rickmorty.R
 import ru.mrapple100.rickmorty.ui.common.UiStatus
 import ru.mrapple100.rickmorty.ui.components.organism.CharacterVerticalCard
 import ru.mrapple100.rickmorty.ui.components.organism.ShimmeredCharacterVerticalCard
+import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.AnimTwoVerticalCardBlink
+import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.AnimTwoVerticalCards
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.CardStackController
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.blinkBackground
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.draggableStack
@@ -101,25 +99,31 @@ fun GameCharactersPage(
 
                         items.add(
                             OnBoardingData(
-                                R.drawable.defaultrickmorty,
-                                "Вспомни",
-                                buildAnnotatedString {  append("Тебе необходимо вспомнить какой из персонажей появился в сериале Rick And Morty раньше!")}
+                                image = R.drawable.defaultrickmorty,
+                                title = "Вспомни",
+                                desc = buildAnnotatedString {  append("Тебе необходимо вспомнить какой из персонажей появился в сериале Rick And Morty раньше!")}
                             )
                         )
 
                         items.add(
                             OnBoardingData(
-                                R.drawable.defaultrickmorty,
-                                "Смахни влево или вправо",
-                                buildAnnotatedString {  append("Карточку с персонажем нужно смахнуть в сторону. Так ты сделаешь свой выбор!")}
+                                image = R.drawable.defaultrickmorty,
+                                animContent = {
+                                    AnimTwoVerticalCards()
+                                },
+                                title = "Смахни влево или вправо",
+                                desc = buildAnnotatedString {  append("Карточку с персонажем нужно смахнуть в сторону. Так ты сделаешь свой выбор!")}
                             )
                         )
 
                         items.add(
                             OnBoardingData(
-                                R.drawable.defaultrickmorty,
-                                "Узнай правильный ответ",
-                                buildAnnotatedString {
+                                image = R.drawable.defaultrickmorty,
+                                animContent = {
+                                    AnimTwoVerticalCardBlink()
+                                },
+                                title = "Узнай правильный ответ",
+                                desc = buildAnnotatedString {
                                     append("После свайпа экран подсветится ")
                                     withStyle(style = SpanStyle(color = Colors.greenWin)) {
                                         append("зеленым")

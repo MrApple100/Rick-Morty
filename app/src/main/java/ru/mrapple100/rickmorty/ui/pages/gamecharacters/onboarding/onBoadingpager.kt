@@ -62,20 +62,18 @@ fun OnBoardingPager(
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    if(item[page].animContent==null) {
+                        Image(
+                            painter = painterResource(id = item[page].image),
+                            contentDescription = item[page].title,
+                            modifier = Modifier
+                                .height(250.dp)
+                                .fillMaxWidth()
+                        )
+                    }else{
+                        item[page].animContent?.let { it() }
+                    }
 
-                    Image(
-                         painter = painterResource(id = item[page].image),
-                         contentDescription = item[page].title,
-                         modifier = Modifier
-                             .height(250.dp)
-                             .fillMaxWidth()
-                     )
-//                    LoaderIntro(
-//                        modifier = Modifier
-//                            .size(200.dp)
-//                            .fillMaxWidth()
-//                            .align(alignment = Alignment.CenterHorizontally), item[page].image
-//                    )
                     Text(
                         text = item[page].title,
                         textAlign = TextAlign.Center,
