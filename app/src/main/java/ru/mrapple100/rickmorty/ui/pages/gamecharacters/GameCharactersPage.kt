@@ -111,7 +111,7 @@ fun GameCharactersPage(
                                 animContent = {
                                     AnimTwoVerticalCards()
                                 },
-                                title = "Смахни влево или вправо",
+                                title = "Смахни",
                                 desc = buildAnnotatedString {  append("Карточку с персонажем нужно смахнуть в сторону. Так ты сделаешь свой выбор!")}
                             )
                         )
@@ -120,9 +120,9 @@ fun GameCharactersPage(
                             OnBoardingData(
                                 image = R.drawable.defaultrickmorty,
                                 animContent = {
-                                    AnimTwoVerticalCardBlink()
+                                    AnimTwoVerticalCardBlink(true)
                                 },
-                                title = "Узнай правильный ответ",
+                                title = "Узнай",
                                 desc = buildAnnotatedString {
                                     append("После свайпа экран подсветится ")
                                     withStyle(style = SpanStyle(color = Colors.greenWin)) {

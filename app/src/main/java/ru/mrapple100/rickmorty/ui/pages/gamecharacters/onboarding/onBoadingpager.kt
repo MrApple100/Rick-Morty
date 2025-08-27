@@ -154,7 +154,7 @@ fun OnBoardingPager(
                         text = "Get Started",
                         modifier = Modifier
                             .padding(vertical = 8.dp, horizontal = 40.dp),
-                        color = Colors.gray
+                        color = Colors.lightGray
                     )
                 }
             } else {
