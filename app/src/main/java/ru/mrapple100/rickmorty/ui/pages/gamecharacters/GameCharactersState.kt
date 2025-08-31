@@ -11,7 +11,8 @@ data class GameCharactersState(
     val currentCorrect: ChooseUser = ChooseUser.CardFirst,
     val status: UiStatus = UiStatus.Loading,
     val queuePair: ArrayDeque<Pair<CharacterCardModel?,CharacterCardModel?>> = ArrayDeque(5),
-    val currentPair: Pair<CharacterCardModel?,CharacterCardModel?> = Pair(CharacterCardModel(),CharacterCardModel())
+    val currentPair: Pair<CharacterCardModel?,CharacterCardModel?> = Pair(CharacterCardModel(),CharacterCardModel()),
+    val countChanges: Int = 0,
+    val countCorrect: Int = 0
 
-) {
-}
+)
