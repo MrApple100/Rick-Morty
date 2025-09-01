@@ -53,6 +53,10 @@ class CharacterListViewModel @Inject constructor(
         }
     }
 
+    private val _isDataLoadEnd = MutableStateFlow(true)
+    val isDataLoadEnd = _isDataLoadEnd.asStateFlow()
+
+
     fun refreshCharacterPage(){
         intent {
             refreshJob?.cancel()
@@ -99,6 +103,7 @@ class CharacterListViewModel @Inject constructor(
                             )
                         }
                     }
+                    _isDataLoadEnd.value = true
                 }
             }
         }

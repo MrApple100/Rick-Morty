@@ -3,6 +3,7 @@ package ru.mrapple100.rickmorty
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
@@ -17,11 +18,14 @@ import androidx.compose.runtime.compositionLocalOf
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -30,6 +34,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import ru.mrapple100.rickmorty.navigation.Destination
@@ -47,8 +53,23 @@ import ru.mrapple100.rickmorty.ui.theme.RickAndMortyTheme
 
 @AndroidEntryPoint()
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+
         super.onCreate(savedInstanceState)
+
+        val viewModel: CharacterListViewModel by viewModels()
+
+        var keepSplashOnScreen by mutableStateOf(true)
+
+        lifecycleScope.launch {
+            viewModel.isDataLoadEnd.collect { isLoading ->
+                keepSplashOnScreen = !isLoading
+            }
+        }
+        splashScreen.setKeepOnScreenCondition { keepSplashOnScreen }
+
         setContent {
             RickAndMortyTheme {
                 val navController = rememberNavController()
@@ -139,6 +160,8 @@ private fun addLibrary(navController: NavHostController) {
                             onScrollDown = { -> viewModel.scrollDown() },
                             onRefresh = { -> viewModel.refreshCharacterPage() }
                         )
+
+
                     }
                 }
                 composable(

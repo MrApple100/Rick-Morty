@@ -97,6 +97,9 @@ dependencies {
     //Shimmer
     implementation(libs.compose.shimmer)
 
+    //Splash
+    implementation(libs.androidx.core.splashscreen)
+
 
 
     implementation(libs.androidx.core.ktx)
