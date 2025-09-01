@@ -80,6 +80,8 @@ class GameCharactersViewModel @Inject constructor(
             reduce {
                 state.copy(
                     gameStatus = GameStatus.ShowStatus(WINLOSEStatus.WIN),
+                    countCorrect = this.state.countCorrect + 1,
+                    countChanges = this.state.countChanges + 1
                 )
             }
         }
@@ -89,7 +91,8 @@ class GameCharactersViewModel @Inject constructor(
         intent {
             reduce {
                 state.copy(
-                    gameStatus = GameStatus.ShowStatus(WINLOSEStatus.LOSE)
+                    gameStatus = GameStatus.ShowStatus(WINLOSEStatus.LOSE),
+                    countChanges = this.state.countChanges + 1
                 )
             }
 
@@ -134,6 +137,7 @@ class GameCharactersViewModel @Inject constructor(
 //                )
 //            }
            initfetchCharacters()
+            delay(400)
             reduce {
                 state.copy(
                     gameStatus = GameStatus.ProccessStatus,

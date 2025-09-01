@@ -1,5 +1,6 @@
 package ru.mrapple100.rickmorty.ui.components.organism
 
+
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -42,7 +43,7 @@ import ru.mrapple100.rickmorty.ui.pages.characterdetails.characterDetailBoundsTr
 import ru.mrapple100.rickmorty.ui.pages.characterdetails.nonSpatialExpressiveSpring
 
 @Composable
-fun CharacterVerticalCard(
+fun CharacterHorizontalCard(
     characterModel: CharacterCardModel,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -53,7 +54,7 @@ fun CharacterVerticalCard(
         elevation = CardDefaults.cardElevation(4.dp),
         onClick = onClick
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .padding(12.dp)
                 .wrapContentWidth(align = Alignment.CenterHorizontally)
@@ -61,13 +62,13 @@ fun CharacterVerticalCard(
         ) {
             Box(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
+                    .align(Alignment.CenterVertically)
             ) {
 
                 AsyncImage(
                     modifier = Modifier
-                        .clip(shape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp))
-                        .size(188.dp),
+                        .clip(shape = RoundedCornerShape(10.dp, 0.dp, 0.dp, 10.dp))
+                        .size(100.dp),
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(characterModel.imageStr)
                         .crossfade(true)
@@ -87,28 +88,27 @@ fun CharacterVerticalCard(
                 )
 
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
+            Spacer(modifier = Modifier.width(8.dp))
+            Column(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
+                    .align(Alignment.CenterVertically)
             ) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth(fraction = 0.5f),
-                    textAlign = TextAlign.End,
                     text = characterModel.name,
                     style = MaterialTheme.typography.bodySmall,
                     overflow = TextOverflow.Ellipsis
 
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = " | ",
+                    text = " - ",
                     style = MaterialTheme.typography.bodySmall,
 
                     )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     modifier = Modifier
@@ -124,7 +124,7 @@ fun CharacterVerticalCard(
 }
 
 @Composable
-fun ShimmeredCharacterVerticalCard(
+fun ShimmeredCharacterHorizontalCard(
     modifier: Modifier = Modifier
 ) {
     val defaultShimmer = rememberShimmer(
@@ -136,7 +136,7 @@ fun ShimmeredCharacterVerticalCard(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(4.dp),
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .padding(12.dp)
                 .wrapContentWidth(align = Alignment.CenterHorizontally)
@@ -145,7 +145,7 @@ fun ShimmeredCharacterVerticalCard(
 
             Box(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
+                    .align(Alignment.CenterVertically)
             ) {
 
                 ShimmerBox(
@@ -156,10 +156,10 @@ fun ShimmeredCharacterVerticalCard(
                 )
 
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
+            Spacer(modifier = Modifier.width(8.dp))
+            Column(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
+                    .align(Alignment.CenterVertically)
             ) {
                 ShimmerBox(
                     modifier = Modifier
@@ -167,7 +167,7 @@ fun ShimmeredCharacterVerticalCard(
                         .height(20.dp),
                     shimmer = defaultShimmer
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 ShimmerBox(
                     modifier = Modifier
                         .fillMaxWidth()

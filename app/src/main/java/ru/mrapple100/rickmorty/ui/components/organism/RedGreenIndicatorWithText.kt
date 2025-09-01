@@ -32,19 +32,17 @@ fun RedGreenIndicatorWithText(
         )
         Text(
             text = correctCount.toString(),
-            color = Color.White,
             fontSize = 12.sp,
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .offset(x = 4.dp, y = (-4).dp) // Смещение вверх и вправо
+                .offset(x = 4.dp, y = (0).dp) // Смещение вверх и вправо
         )
         Text(
             text = incorrectCount.toString(),
-            color = Color.White,
             fontSize = 12.sp,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .offset(x = (-4).dp, y = (-4).dp) // Смещение вверх и влево
+                .offset(x = (-4).dp, y = (0).dp) // Смещение вверх и влево
         )
     }
 }
