@@ -1,12 +1,16 @@
 package ru.mrapple100.rickmorty.ui.pages.gamecharacters
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -18,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
@@ -29,7 +34,9 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import ru.mrapple100.domain.character.model.CharacterCardModel
 import ru.mrapple100.rickmorty.R
 import ru.mrapple100.rickmorty.ui.common.UiStatus
+import ru.mrapple100.rickmorty.ui.components.organism.CharacterHorizontalCard
 import ru.mrapple100.rickmorty.ui.components.organism.CharacterVerticalCard
+import ru.mrapple100.rickmorty.ui.components.organism.RedGreenIndicatorWithText
 import ru.mrapple100.rickmorty.ui.components.organism.ShimmeredCharacterVerticalCard
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.AnimTwoVerticalCardBlink
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.AnimTwoVerticalCards
@@ -154,35 +161,143 @@ fun GameCharactersPage(
                         )
                 }
                 is UiStatus.Success -> {
+                    val configuration = LocalConfiguration.current
+                    when (configuration.orientation) {
+                        Configuration.ORIENTATION_LANDSCAPE -> {
+                            if(state.countChanges>0) {
+                                Box(
+                                    modifier = Modifier
+                                        .padding(it)
+                                        .fillMaxSize(),
+                                    contentAlignment = Alignment.TopCenter
+                                ) {
+                                    RedGreenIndicatorWithText(
+                                        modifier = Modifier
+                                            .size(300.dp,25.dp),
+                                        Colors.greenWin,
+                                        Colors.redLose,
+                                        proportion = state.countCorrect / state.countChanges.toFloat(),
+                                        correctCount = state.countCorrect,
+                                        incorrectCount = state.countChanges - state.countCorrect
+                                    )
+                                }
+                            }else{
+                                Box(
+                                    modifier = Modifier
+                                        .padding(it)
+                                        .fillMaxSize(),
+                                    contentAlignment = Alignment.TopCenter
+                                ) {
+                                    RedGreenIndicatorWithText(
+                                        modifier = Modifier
+                                            .size(300.dp,25.dp),
+                                        Colors.lightGray,
+                                        Colors.lightGray,
+                                        proportion = 0.5f,
+                                        correctCount = state.countCorrect,
+                                        incorrectCount = state.countChanges - state.countCorrect
+                                    )
+                                }
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .padding(it)
+                                    .fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Box( modifier = Modifier
+                                    .fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ){
+                                    TwoHorizontalCard(
+                                        cardStackController,
+                                        cardStackController2,
+                                        visibleCardState,
+                                        visibleCardState2,
+                                        state.currentPair.first!!,
+                                        state.currentPair.second!!
+                                    )
+                                    if(state.queuePair.size>0)
+                                        Box(modifier = Modifier.visible(false).zIndex(-1f)) {
+                                            TwoVerticalCardWait(//not need to remake
+                                                state.queuePair[1].first!!,
+                                                state.queuePair[1].second!!
+                                            )
+                                        }
+                                }
 
-                    Column(
-                        modifier = Modifier
-                            .padding(it)
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Box( modifier = Modifier
-                            .fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ){
-                            TwoVerticalCard(
-                                cardStackController,
-                                cardStackController2,
-                                visibleCardState,
-                                visibleCardState2,
-                                state.currentPair.first!!,
-                                state.currentPair.second!!
-                            )
-                            Box(modifier = Modifier.visible(false).zIndex(-1f)) {
-                                TwoVerticalCardWait(
-                                    state.queuePair[1].first!!,
-                                    state.queuePair[1].second!!
-                                )
                             }
                         }
+                        Configuration.ORIENTATION_PORTRAIT -> {
+                            if(state.countChanges>0) {
+                                Box(
+                                    modifier = Modifier
+                                        .padding(it)
+                                        .fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    RedGreenIndicatorWithText(
+                                        modifier = Modifier
+                                            .size(300.dp,25.dp),
+                                        Colors.greenWin,
+                                        Colors.redLose,
+                                        proportion = state.countCorrect / state.countChanges.toFloat(),
+                                        correctCount = state.countCorrect,
+                                        incorrectCount = state.countChanges - state.countCorrect
+                                    )
+                                }
+                            }else{
+                                Box(
+                                    modifier = Modifier
+                                        .padding(it)
+                                        .fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    RedGreenIndicatorWithText(
+                                        modifier = Modifier
+                                            .size(300.dp,25.dp),
+                                        Colors.lightGray,
+                                        Colors.lightGray,
+                                        proportion = 0.5f,
+                                        correctCount = state.countCorrect,
+                                        incorrectCount = state.countChanges - state.countCorrect
+                                    )
+                                }
+                            }
 
+                            Column(
+                                modifier = Modifier
+                                    .padding(it)
+                                    .fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Box( modifier = Modifier
+                                    .fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ){
+                                    TwoVerticalCard(
+                                        cardStackController,
+                                        cardStackController2,
+                                        visibleCardState,
+                                        visibleCardState2,
+                                        state.currentPair.first!!,
+                                        state.currentPair.second!!
+                                    )
+                                    if(state.queuePair.size>0)
+                                        Box(modifier = Modifier.visible(false).zIndex(-1f)) {
+                                            TwoVerticalCardWait(
+                                                state.queuePair[1].first!!,
+                                                state.queuePair[1].second!!
+                                            )
+                                        }
+                                }
+
+                            }
+                        }
                     }
+
 
                 }
                 is UiStatus.Loading ->{
@@ -358,6 +473,77 @@ inline fun TwoVerticalCardWait(
             onClick = {},
             characterModel = second!!
         )
+    }
+}
+
+@Composable
+inline fun TwoHorizontalCard(cardStackController: CardStackController,
+                           cardStackController2: CardStackController,
+                           visibleCardState: Boolean,
+                           visibleCardState2: Boolean,
+                           first:CharacterCardModel,
+                           second:CharacterCardModel){
+    Row(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(fraction = 0.5f)
+                .width(150.dp),
+
+            contentAlignment = Alignment.Center
+        ) {
+            CharacterHorizontalCard(
+                modifier = Modifier
+                    .draggableStack(
+                        controller = cardStackController,
+                        velocityThreshold = 100.dp
+                    )
+                    .moveTo(
+                        x = cardStackController.offsetX.value,
+                        y = cardStackController.offsetY.value
+                    )
+                    .visible(visibleCardState)
+                    .graphicsLayer(
+                        rotationZ = cardStackController.rotation.value,
+                        //scaleX = cardStackController.scale.value,
+                        //scaleY = cardStackController.scale.value
+                    ).width(300.dp)
+                ,
+                onClick = {},
+                characterModel = first!!
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+
+        ) {
+            CharacterHorizontalCard(
+                modifier = Modifier
+                    .draggableStack(
+                        controller = cardStackController2,
+                        velocityThreshold = 100.dp
+                    )
+                    .visible(visibleCardState2)
+                    .moveTo(
+                        x = cardStackController2.offsetX.value,
+                        y = cardStackController2.offsetY.value
+                    )
+                    .graphicsLayer(
+                        rotationZ = cardStackController2.rotation.value,
+                        //scaleX = cardStackController2.scale.value,
+                        //scaleY = cardStackController2.scale.value
+                    )
+                    .width(300.dp),
+                onClick = {},
+                characterModel = second!!
+            )
+        }
     }
 }
 

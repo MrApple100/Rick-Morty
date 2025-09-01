@@ -38,6 +38,7 @@ fun SearchBar(
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.primary,
                 unfocusedContainerColor = MaterialTheme.colorScheme.primary,
+                cursorColor = MaterialTheme.colorScheme.outline,
                 focusedIndicatorColor = MaterialTheme.colorScheme.outline
             ),
             placeholder = { Text(stringResource(R.string.search)) }
