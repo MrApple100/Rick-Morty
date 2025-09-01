@@ -37,7 +37,9 @@ import ru.mrapple100.rickmorty.ui.common.UiStatus
 import ru.mrapple100.rickmorty.ui.components.organism.CharacterHorizontalCard
 import ru.mrapple100.rickmorty.ui.components.organism.CharacterVerticalCard
 import ru.mrapple100.rickmorty.ui.components.organism.RedGreenIndicatorWithText
+import ru.mrapple100.rickmorty.ui.components.organism.ShimmeredCharacterHorizontalCard
 import ru.mrapple100.rickmorty.ui.components.organism.ShimmeredCharacterVerticalCard
+import ru.mrapple100.rickmorty.ui.components.shimmer.ShimmerBox
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.AnimTwoVerticalCardBlink
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.AnimTwoVerticalCards
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.anim.CardStackController
@@ -199,12 +201,12 @@ fun GameCharactersPage(
                                     )
                                 }
                             }
-                            Column(
+                            Row(
                                 modifier = Modifier
                                     .padding(it)
                                     .fillMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Box( modifier = Modifier
                                     .fillMaxSize(),
@@ -301,37 +303,79 @@ fun GameCharactersPage(
 
                 }
                 is UiStatus.Loading ->{
-                    Column(
-                        modifier = Modifier
-                            .padding(it)
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight(fraction = 0.5f)
-                                .width(220.dp),
 
-                            contentAlignment = Alignment.Center
-                        ) {
-                            ShimmeredCharacterVerticalCard(
+                    val configuration = LocalConfiguration.current
+                    when (configuration.orientation) {
+                        Configuration.ORIENTATION_LANDSCAPE -> {
+                            Row(
                                 modifier = Modifier
-                            )
+                                    .fillMaxSize(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth(fraction = 0.5f)
+                                        .width(150.dp),
+
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    ShimmeredCharacterHorizontalCard(
+                                        modifier = Modifier
+                                            .width(300.dp)
+                                    )
+                                }
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .width(150.dp),
+                                    contentAlignment = Alignment.Center
+
+                                ) {
+                                    ShimmeredCharacterHorizontalCard(
+                                        modifier = Modifier
+                                            .width(300.dp)
+
+
+                                    )
+                                }
+                            }
                         }
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .width(220.dp),
-                            contentAlignment = Alignment.Center
-
-                        ) {
-                            ShimmeredCharacterVerticalCard(
+                        Configuration.ORIENTATION_PORTRAIT -> {
+                            Column(
                                 modifier = Modifier
+                                    .padding(it)
+                                    .fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxHeight(fraction = 0.5f)
+                                        .width(220.dp),
 
-                            )
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    ShimmeredCharacterVerticalCard(
+                                        modifier = Modifier
+                                    )
+                                }
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .width(220.dp),
+                                    contentAlignment = Alignment.Center
+
+                                ) {
+                                    ShimmeredCharacterVerticalCard(
+                                        modifier = Modifier
+
+                                    )
+                                }
+                            }
                         }
                     }
+
                 }
 
                 is UiStatus.Failed -> TODO()

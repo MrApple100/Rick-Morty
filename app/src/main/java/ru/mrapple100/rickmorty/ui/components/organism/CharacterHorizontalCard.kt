@@ -150,7 +150,7 @@ fun ShimmeredCharacterHorizontalCard(
 
                 ShimmerBox(
                     modifier = Modifier
-                        .size(200.dp),
+                        .size(100.dp),
                     shimmer = defaultShimmer
 
                 )
