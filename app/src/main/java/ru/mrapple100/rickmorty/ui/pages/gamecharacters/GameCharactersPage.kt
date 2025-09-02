@@ -287,7 +287,7 @@ fun GameCharactersPage(
                                         state.currentPair.first!!,
                                         state.currentPair.second!!
                                     )
-                                    if(state.queuePair.size>0)
+                                    if(state.queuePair.size>1)
                                         Box(modifier = Modifier.visible(false).zIndex(-1f)) {
                                             TwoVerticalCardWait(
                                                 state.queuePair[1].first!!,

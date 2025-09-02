@@ -4,7 +4,7 @@ plugins {
     kotlin("plugin.serialization") version "2.2.0"
     alias(libs.plugins.hilt.android)
     id("com.google.devtools.ksp")
-
+    id ("com.google.gms.google-services")
     alias(libs.plugins.compose.compiler)
 
 }
@@ -100,6 +100,13 @@ dependencies {
     //Splash
     implementation(libs.androidx.core.splashscreen)
 
+    //Firebase
+    implementation(platform(libs.google.firebase.bom))
+    implementation(libs.firebase.messaging)
+
+
+
+    implementation(libs.accompanist.permissions)
 
 
     implementation(libs.androidx.core.ktx)

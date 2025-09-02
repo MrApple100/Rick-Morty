@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "574883653909",
+    "project_id": "rickandmortybymrapple100",
+    "storage_bucket": "rickandmortybymrapple100.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:574883653909:android:ca4629eb3e3ea7f21b211c",
+        "android_client_info": {
+          "package_name": "ru.mrapple100.rickmorty"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnZ-i70cQ4mDM5ZjGqCIsZo83WM9XLAcA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
