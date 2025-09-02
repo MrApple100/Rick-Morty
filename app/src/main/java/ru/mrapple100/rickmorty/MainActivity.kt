@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -70,10 +71,21 @@ class MainActivity : ComponentActivity() {
         }
         splashScreen.setKeepOnScreenCondition { keepSplashOnScreen }
 
+        val mainDestinationViewModel: MainNavigationViewModel by viewModels()
+
         setContent {
             RickAndMortyTheme {
                 val navController = rememberNavController()
-                var selectedDestination by remember{ mutableIntStateOf(0) }
+
+                val stateDestination by mainDestinationViewModel.collectAsState()
+
+                mainDestinationViewModel.collectSideEffect {
+                    when(it){
+                        is MainNavigationSideEffect.ChangeBottomDestination ->{
+                            mainDestinationViewModel.changeSelectedDestination(it.destination)
+                        }
+                    }
+                }
 
                 window.statusBarColor = MaterialTheme.colorScheme.primaryContainer.toArgb()
                 Scaffold(
@@ -81,12 +93,13 @@ class MainActivity : ComponentActivity() {
                     bottomBar = {
                         NavigationBar(
                             windowInsets = NavigationBarDefaults.windowInsets,) {
-                            Destination.entries.forEachIndexed { index, destination ->
+                            Destination.entries.forEach { destination ->
                                 NavigationBarItem(
-                                    selected = selectedDestination == index,
+                                    selected = stateDestination.selectedDestinationBottom == destination,
                                     onClick = {
                                         navController.navigate(route = destination.route)
-                                        selectedDestination = index
+                                        mainDestinationViewModel.postChangeSelectedDestinationSE(destination)
+
                                     },
                                     icon = {
                                         Icon(
