@@ -1,5 +1,6 @@
 package ru.mrapple100.rickmorty
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
@@ -120,7 +122,7 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .padding(innerPadding)
                         ){
-                            addLibrary(navController = navController)
+                            addLibrary(navController = navController,this@MainActivity)
                         }
                     }
                 )
@@ -133,7 +135,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalPagerApi::class)
-private fun addLibrary(navController: NavHostController) {
+private fun addLibrary(navController: NavHostController,activity: MainActivity) {
     SharedTransitionLayout {
         CompositionLocalProvider (
             LocalSharedTransitionScope provides this
@@ -154,7 +156,7 @@ private fun addLibrary(navController: NavHostController) {
                     CompositionLocalProvider(
                         LocalAnimatedVisibilityScope provides this@composable,
                     ) {
-                        val viewModel = hiltViewModel<CharacterListViewModel>()
+                        val viewModel = hiltViewModel<CharacterListViewModel>(activity)
                         val state by viewModel.collectAsState()
                         viewModel.collectSideEffect {
                             when (it) {
@@ -193,7 +195,7 @@ private fun addLibrary(navController: NavHostController) {
                     CompositionLocalProvider(
                         LocalAnimatedVisibilityScope provides this@composable,
                     ) {
-                        val viewModel = hiltViewModel<CharacterDetailsViewModel>()
+                        val viewModel = hiltViewModel<CharacterDetailsViewModel>(activity)
                         val state by viewModel.collectAsState()
                         viewModel.collectSideEffect {
                             when (it) {
@@ -217,7 +219,7 @@ private fun addLibrary(navController: NavHostController) {
                     CompositionLocalProvider(
                         LocalAnimatedVisibilityScope provides this@composable,
                     ) {
-                        val viewModel = hiltViewModel<GameCharactersViewModel>()
+                        val viewModel = hiltViewModel<GameCharactersViewModel>(activity)
                         val state by viewModel.collectAsState()
                         viewModel.collectSideEffect {
                             when (it) {

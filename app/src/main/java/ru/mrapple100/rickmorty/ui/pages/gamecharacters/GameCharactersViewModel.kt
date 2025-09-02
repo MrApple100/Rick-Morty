@@ -29,16 +29,19 @@ class GameCharactersViewModel @Inject constructor(
     )
 
     init {
+
         intent {
-            if(endFirstOnBoardingGame()) {
-                reduce {
-                    state.copy(
-                        status = UiStatus.OnBoarding
-                    )
+            if(state.status != UiStatus.Success) {
+                if (endFirstOnBoardingGame()) {
+                    reduce {
+                        state.copy(
+                            status = UiStatus.OnBoarding
+                        )
+                    }
+                    initfetchCharacters()
+                } else {
+                    toEndOnBoarding()
                 }
-                initfetchCharacters()
-            }else{
-                toEndOnBoarding()
             }
         }
     }

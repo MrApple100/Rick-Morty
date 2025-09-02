@@ -49,7 +49,8 @@ class CharacterListViewModel @Inject constructor(
 
     init {
         intent {
-            searchCharacter(state.searchText)
+            if(state.status != UiStatus.Success)
+                searchCharacter(state.searchText)
         }
     }
 
