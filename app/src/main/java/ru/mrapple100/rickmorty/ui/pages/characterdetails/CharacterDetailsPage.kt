@@ -119,14 +119,16 @@ fun CharacterDetailsPage(
                 TopBar(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight()
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        modifier = Modifier.clickable { onBackNavigate() },
-                        contentDescription = ""
-                    )
-                }
+                        .wrapContentHeight(),
+                    content = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            modifier = Modifier.clickable { onBackNavigate() },
+                            contentDescription = ""
+                        )
+                    },
+                    scrollBehavior = null
+                )
             },
             content = {
                 Column(

@@ -22,15 +22,16 @@ import ru.mrapple100.rickmorty.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
+    searchText : String ="",
     onChangedSearchText: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var searchText by remember { mutableStateOf("") }
+    var searchT by remember { mutableStateOf(searchText) }
     Box(modifier = modifier) {
         OutlinedTextField(
-            value = searchText,
+            value = searchT,
             onValueChange = {
-                searchText = it
+                searchT = it
                 onChangedSearchText(it)
             },
             modifier = Modifier.fillMaxWidth(),

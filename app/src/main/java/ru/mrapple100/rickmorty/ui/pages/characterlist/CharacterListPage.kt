@@ -2,9 +2,16 @@ package ru.mrapple100.rickmorty.ui.pages.characterlist
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.with
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Box
@@ -51,7 +58,9 @@ import ru.mrapple100.rickmorty.ui.components.organism.CharacterTwoCard
 import ru.mrapple100.rickmorty.ui.components.organism.ShimmeredCharacterTwoCard
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class,
+    ExperimentalAnimationApi::class
+)
 @Composable
 fun CharacterListPage(
     state: CharacterCardListState,
@@ -65,26 +74,60 @@ fun CharacterListPage(
         LocalSharedTransitionScope.current ?: throw IllegalStateException("No Scope found")
     val animatedContentScope = LocalAnimatedVisibilityScope.current
         ?: throw IllegalStateException("No Scope found")
+
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val isCollapsed = scrollBehavior.state.collapsedFraction > 0.1f
+
     Scaffold(
         topBar = {
             with(sharedTransitionScope) {
-                TopBar(
-                    content = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .sharedElement(
-                            sharedContentState = sharedTransitionScope.rememberSharedContentState(key = "topBar"),
-                            animatedVisibilityScope = animatedContentScope,
-                            zIndexInOverlay = 5f
-                        )
-                        .sharedBounds(
-                            sharedContentState = sharedTransitionScope.rememberSharedContentState(key = "topBar"),
-                            animatedVisibilityScope = animatedContentScope,
-                            zIndexInOverlay = 5f
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()) {
+                    AnimatedContent(
+                        targetState = isCollapsed,
+                        transitionSpec = {
+                            fadeIn(animationSpec = tween(300)) with
+                                    fadeOut(animationSpec = tween(300)) using
+                                    SizeTransform(clip = false)
+                        },
+                        label = "Search Transition"
+                    ) { collapsed ->
+                        if (collapsed) {
+                            TopBar(
+                                content = null,
+                                scrollBehavior = scrollBehavior,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
+                                    .sharedElement(
+                                        sharedContentState = sharedTransitionScope.rememberSharedContentState(
+                                            key = "topBar"
+                                        ),
+                                        animatedVisibilityScope = animatedContentScope,
+                                        zIndexInOverlay = 5f
+                                    )
+                                    .sharedBounds(
+                                        sharedContentState = sharedTransitionScope.rememberSharedContentState(
+                                            key = "topBar"
+                                        ),
+                                        animatedVisibilityScope = animatedContentScope,
+                                        zIndexInOverlay = 5f
 
-                        )
-                )
+                                    )
+                            )
+                        } else {
+
+                        }
+                    }
+                    SearchBar(
+                        searchText = state.searchText,
+                        onChangedSearchText = { onSearchCharacter(it) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    )
+                }
             }
         },
         content = { innerPading ->
@@ -129,13 +172,7 @@ fun CharacterListPage(
                         Column(
                             modifier = Modifier
                             .fillMaxSize(),) {
-                            SearchBar(
-                               // searchText = state.searchText,
-                                onChangedSearchText = { onSearchCharacter(it) },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp)
-                            )
+
                             LazyColumn(
                                 modifier = Modifier
                                     .fillMaxSize(),
