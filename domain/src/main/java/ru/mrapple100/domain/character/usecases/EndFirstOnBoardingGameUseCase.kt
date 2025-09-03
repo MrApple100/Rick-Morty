@@ -12,4 +12,7 @@ class EndFirstOnBoardingGameUseCase @Inject constructor(
     suspend fun endOnBoarding() {
         characterRepository.setFirstTimeOnBoardingGameEnd()
     }
+    suspend fun startOnBoarding() {
+        characterRepository.setFirstTimeOnBoardingGameStart()
+    }
 }

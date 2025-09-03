@@ -48,14 +48,38 @@ class GameCharactersViewModel @Inject constructor(
 
     fun toEndOnBoarding(){
         intent{
+
+            if(state.queuePair.size < 1) {
+                reduce {
+                    state.copy(
+                        gameStatus = GameStatus.ChangeCharactersStatus,
+                        status = UiStatus.Loading
+                    )
+                }
+                endFirstOnBoardingGame.endOnBoarding()
+                changeCharacters()
+            }else{
+                reduce {
+                    state.copy(
+                        gameStatus = GameStatus.ProccessStatus,
+                        status = UiStatus.Success
+                    )
+                }
+                endFirstOnBoardingGame.endOnBoarding()
+            }
+        }
+
+
+    }
+    fun toStartOnBoarding(){
+        intent{
             reduce{
                 state.copy(
-                    gameStatus = GameStatus.ChangeCharactersStatus,
-                    status = UiStatus.Loading
+                    gameStatus = GameStatus.ProccessStatus,
+                    status = UiStatus.OnBoarding
                 )
             }
-            endFirstOnBoardingGame.endOnBoarding()
-            changeCharacters()
+            endFirstOnBoardingGame.startOnBoarding()
         }
 
 
@@ -140,7 +164,7 @@ class GameCharactersViewModel @Inject constructor(
 //                )
 //            }
            initfetchCharacters()
-            delay(400)
+          //  delay(400)
             reduce {
                 state.copy(
                     gameStatus = GameStatus.ProccessStatus,
@@ -160,6 +184,11 @@ class GameCharactersViewModel @Inject constructor(
     fun postEndOnBoardingSE() {
         intent {
             postSideEffect(GameCharactersSideEffect.ToEndOnBoarding())
+        }
+    }
+    fun postStartOnBoardingSE() {
+        intent {
+            postSideEffect(GameCharactersSideEffect.ToStartOnBoarding())
         }
     }
 

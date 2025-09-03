@@ -28,4 +28,5 @@ interface CharacterRepository {
     suspend fun getCharacterCardById(id: Int): Flow<CharacterCardModel?>
     suspend fun getIsFirstTimeOnBoardingGame(): Boolean
     suspend fun setFirstTimeOnBoardingGameEnd()
+    suspend fun setFirstTimeOnBoardingGameStart()
 }

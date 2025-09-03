@@ -68,4 +68,10 @@ class CharacterMemoryDataSource(
             putBoolean("isFirstTimeOnBoardingGame", false)
         }
     }
+
+    fun setIsFirstTimeOnBoardingGameStart() {
+        sharedPreferences.edit(commit = true){
+            putBoolean("isFirstTimeOnBoardingGame", true)
+        }
+    }
 }

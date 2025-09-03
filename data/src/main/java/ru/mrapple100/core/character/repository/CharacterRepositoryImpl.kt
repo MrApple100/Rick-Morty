@@ -245,6 +245,9 @@ class CharacterRepositoryImpl @Inject constructor(
     override suspend fun setFirstTimeOnBoardingGameEnd(){
         characterMemoryDataSource.setIsFirstTimeOnBoardingGameEnd()
     }
+    override suspend fun setFirstTimeOnBoardingGameStart(){
+        characterMemoryDataSource.setIsFirstTimeOnBoardingGameStart()
+    }
 
 
 }

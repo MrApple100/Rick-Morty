@@ -12,6 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -56,11 +62,13 @@ import ru.mrapple100.rickmorty.ui.pages.gamecharacters.onboarding.OnBoardingPage
 import ru.mrapple100.rickmorty.ui.pages.gamecharacters.onboarding.rememberPagerState
 import ru.mrapple100.rickmorty.ui.theme.Colors
 
+@OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalPagerApi
 @Composable
 fun GameCharactersPage(
     state: GameCharactersState,
     postEndOnBoarding: () -> Unit,
+    postStartOnBoarding: () -> Unit,
     postShowStatus: (ChooseUser) -> Unit,
 ){
     var shouldBlink by remember { mutableStateOf(false) }
@@ -220,7 +228,7 @@ fun GameCharactersPage(
                                         state.currentPair.first!!,
                                         state.currentPair.second!!
                                     )
-                                    if(state.queuePair.size>0)
+                                    if(state.queuePair.size>1)
                                         Box(modifier = Modifier.visible(false).zIndex(-1f)) {
                                             TwoVerticalCardWait(//not need to remake
                                                 state.queuePair[1].first!!,
@@ -415,6 +423,32 @@ fun GameCharactersPage(
                         WINLOSEStatus.NONE -> {}
                     }
                 }
+            }
+        },
+        floatingActionButton = {
+            if(state.status == UiStatus.Success) {
+                IconButton(
+                    modifier = Modifier
+                        .zIndex(-1f),
+                    onClick = {
+                        postStartOnBoarding()
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = "",
+                        tint = Colors.lightGrayVariant
+                    )
+                }
+            }
+        },
+        floatingActionButtonPosition = when(LocalConfiguration.current.orientation){
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                FabPosition.Center
+            }
+
+            else -> {
+                FabPosition.End
             }
         })
 

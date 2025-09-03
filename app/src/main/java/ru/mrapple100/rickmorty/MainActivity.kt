@@ -195,7 +195,7 @@ private fun addLibrary(navController: NavHostController,activity: MainActivity) 
                     CompositionLocalProvider(
                         LocalAnimatedVisibilityScope provides this@composable,
                     ) {
-                        val viewModel = hiltViewModel<CharacterDetailsViewModel>(activity)
+                        val viewModel = hiltViewModel<CharacterDetailsViewModel>()
                         val state by viewModel.collectAsState()
                         viewModel.collectSideEffect {
                             when (it) {
@@ -230,6 +230,9 @@ private fun addLibrary(navController: NavHostController,activity: MainActivity) 
                                 is GameCharactersSideEffect.ToEndOnBoarding -> {
                                     viewModel.toEndOnBoarding()
                                 }
+                                is GameCharactersSideEffect.ToStartOnBoarding -> {
+                                    viewModel.toStartOnBoarding()
+                                }
 
                                 else -> {}
                             }
@@ -237,6 +240,7 @@ private fun addLibrary(navController: NavHostController,activity: MainActivity) 
                         GameCharactersPage(
                             state = state,
                             postEndOnBoarding = {viewModel.postEndOnBoardingSE()},
+                            postStartOnBoarding = {viewModel.postStartOnBoardingSE()},
                             postShowStatus = {chooseUser -> viewModel.postShowStatusSE(chooseUser)},
                         )
                     }
