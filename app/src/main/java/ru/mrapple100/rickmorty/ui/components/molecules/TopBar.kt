@@ -19,7 +19,6 @@ import ru.mrapple100.rickmorty.ui.theme.RickAndMortyTheme
 fun TopBar(
     modifier: Modifier = Modifier,
     content: ((@Composable () -> Unit)?),
-    scrollBehavior: TopAppBarScrollBehavior?
 ) {
     TopAppBar(
         modifier = modifier,
@@ -36,7 +35,6 @@ fun TopBar(
         navigationIcon = {
             content?.invoke()
         },
-        scrollBehavior = scrollBehavior
 
     )
 }
@@ -46,6 +44,6 @@ fun TopBar(
 @Composable
 fun TopBar_Preview(){
     RickAndMortyTheme {
-        TopBar(content = null, scrollBehavior = null)
+        TopBar(content = null)
     }
 }

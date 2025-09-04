@@ -126,9 +126,7 @@ fun CharacterDetailsPage(
                             modifier = Modifier.clickable { onBackNavigate() },
                             contentDescription = ""
                         )
-                    },
-                    scrollBehavior = null
-                )
+                    })
             },
             content = {
                 Column(
