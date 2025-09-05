@@ -110,7 +110,7 @@ fun CharacterListPage(
         snapshotFlow {
             Pair(lazyListState.firstVisibleItemIndex, lazyListState.firstVisibleItemScrollOffset)
         }
-            .debounce(10)
+            .debounce(16)
             .collect { (currentIndex, currentOffset) ->
                 val delta = if (currentIndex == previousFirstVisibleItemIndex) {
                     currentOffset - previousFirstVisibleItemScrollOffset
@@ -129,9 +129,9 @@ fun CharacterListPage(
                 if (newProgress != scrollProgress) {
                     scrollProgress = newProgress
                 }
-                if(delta.toFloat() > 0 && with(density){delta.toFloat().toDp()} > 30.dp){
+                if(with(density){delta.toFloat().toDp()} > 30.dp){
                     maxminOnlyScrollProgress = 1
-                }else if (delta.toFloat() < 0 && with(density){delta.toFloat().toDp()} < (-30).dp){
+                }else if (with(density){delta.toFloat().toDp()} < (-30).dp){
                     maxminOnlyScrollProgress = 0
                 }else{
 
@@ -144,8 +144,8 @@ fun CharacterListPage(
 
     }
     val currentScrollProgressMaxMinOnly by animateIntAsState(
-        targetValue = if(maxminOnlyScrollProgress==1) 1 else 0,
-        animationSpec = tween(durationMillis = 100),
+        targetValue = if(maxminOnlyScrollProgress==1 && !lazyListState.isScrolledToTheStart()) 1 else 0,
+        animationSpec = tween(durationMillis = 300),
         label = "maxminscroll"
     )
 
@@ -365,4 +365,8 @@ fun LazyListState.isScrolledToTheEnd() =
         val visibleSize = layoutInfo.visibleItemsInfo.size
         layoutInfo.visibleItemsInfo.find { it -> it.index == layoutInfo.totalItemsCount - visibleSize } != null
     }
+
+fun LazyListState.isScrolledToTheStart() =
+        layoutInfo.visibleItemsInfo.find { it -> it.index == 1 } != null
+
 
