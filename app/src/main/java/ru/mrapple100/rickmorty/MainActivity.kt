@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -75,6 +76,8 @@ class MainActivity : ComponentActivity() {
 
         val mainDestinationViewModel: MainNavigationViewModel by viewModels()
 
+        pushNotificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+
         setContent {
             RickAndMortyTheme {
                 val navController = rememberNavController()
@@ -128,6 +131,9 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+    private val pushNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+       // viewModel.inputs.onTurnOnNotificationsClicked(granted)
     }
 }
 
@@ -248,7 +254,10 @@ private fun addLibrary(navController: NavHostController,activity: MainActivity) 
             }
         }
     }
+
 }
 val LocalAnimatedVisibilityScope = compositionLocalOf<AnimatedVisibilityScope?> { null }
 @OptIn(ExperimentalSharedTransitionApi::class)
 val LocalSharedTransitionScope = compositionLocalOf<SharedTransitionScope?> { null }
+
+

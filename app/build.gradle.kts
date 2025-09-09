@@ -103,8 +103,7 @@ dependencies {
     //Firebase
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.firebase.messaging)
-
-
+    implementation(libs.firebase.analytics)
 
     implementation(libs.accompanist.permissions)
 
