@@ -21,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,9 +38,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.analytics
+import com.google.firebase.analytics.logEvent
 import ru.mrapple100.domain.character.model.CharacterCardModel
 import ru.mrapple100.rickmorty.R
 import ru.mrapple100.rickmorty.ui.common.UiStatus
+import ru.mrapple100.rickmorty.ui.components.firebase_analytics.BlockFirebaseAnalytics
 import ru.mrapple100.rickmorty.ui.components.organism.CharacterHorizontalCard
 import ru.mrapple100.rickmorty.ui.components.organism.CharacterVerticalCard
 import ru.mrapple100.rickmorty.ui.components.organism.RedGreenIndicatorWithText
@@ -71,13 +77,12 @@ fun GameCharactersPage(
     postStartOnBoarding: () -> Unit,
     postShowStatus: (ChooseUser) -> Unit,
 ){
+    //Analytics
+    BlockFirebaseAnalytics("GameCharactersPage")
+
     var shouldBlink by remember { mutableStateOf(false) }
     var visibleCardState by remember { mutableStateOf(true) }
     var visibleCardState2 by remember { mutableStateOf(true) }
-
-    var queuePairState by remember { mutableStateOf(state.queuePair) }
-
-
 
 
     val cardStackController = rememberCardStackController()
@@ -624,5 +629,7 @@ inline fun TwoHorizontalCard(cardStackController: CardStackController,
         }
     }
 }
+
+
 
 

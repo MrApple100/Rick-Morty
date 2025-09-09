@@ -72,6 +72,7 @@ import ru.mrapple100.domain.character.model.Status
 import ru.mrapple100.rickmorty.LocalAnimatedVisibilityScope
 import ru.mrapple100.rickmorty.LocalSharedTransitionScope
 import ru.mrapple100.rickmorty.R
+import ru.mrapple100.rickmorty.ui.components.firebase_analytics.BlockFirebaseAnalytics
 import ru.mrapple100.rickmorty.ui.components.molecules.TopBar
 import java.util.Locale
 
@@ -98,6 +99,8 @@ fun CharacterDetailsPage(
     state: CharacterState,
     onBackNavigate: () -> Unit
 ) {
+    BlockFirebaseAnalytics("CharacterDetailsPage ${state.detailsCharacter.id} - ${state.detailsCharacter.name}")
+
     val sharedTransitionScope = LocalSharedTransitionScope.current!!
     val animatedContentScope = LocalAnimatedVisibilityScope.current!!
 
