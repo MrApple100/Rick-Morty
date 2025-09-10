@@ -22,6 +22,8 @@ android {
         versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled = true
     }
 
     buildTypes {
@@ -41,6 +43,8 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
+
 }
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
@@ -50,6 +54,8 @@ dependencies {
     implementation(project(":common"))
     implementation(project(":domain"))
     implementation(project(":data"))
+
+    implementation(libs.androidx.multidex)
 
 
     // DI
@@ -107,13 +113,32 @@ dependencies {
 
     implementation(libs.accompanist.permissions)
 
-
     implementation(libs.androidx.core.ktx)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.kaspresso.compose.support)
-    androidTestUtil("androidx.test:orchestrator:1.4.2")
+
+//    testImplementation(libs.junit)
+//    testImplementation(libs.androidx.junit)
+//    testImplementation(libs.androidx.espresso.core)
+//
+//    testImplementation(libs.android.devices.kaspresso)
+//    testImplementation(libs.kaspresso.compose.support)
+//    testImplementation(libs.androidx.orchestrator)
+//    testImplementation(libs.kaspresso)
+//    testImplementation(libs.composekakao)
+// Дополнительные зависимости для тестирования
+    androidTestImplementation(libs.androidx.junit.v115)
+    androidTestImplementation(libs.androidx.espresso.core.v370)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Тестирование: Kaspresso с поддержкой Compose
+    androidTestImplementation(libs.kaspresso.v153)
+    androidTestImplementation(libs.kaspresso.compose.support.v153)
+
+    androidTestImplementation(libs.hamcrest)
+
+//    androidTestImplementation(libs.androidXTestRunner)
+//    androidTestImplementation(libs.composeUiTestJunit)
 
 
 }
