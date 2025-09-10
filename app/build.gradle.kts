@@ -121,13 +121,6 @@ dependencies {
     testImplementation(libs.androidx.core.testing)
     testImplementation(libs.turbine) // Для тестирования Flow
 
-//    testImplementation(libs.androidx.espresso.core)
-//
-//    testImplementation(libs.android.devices.kaspresso)
-//    testImplementation(libs.kaspresso.compose.support)
-//    testImplementation(libs.androidx.orchestrator)
-//    testImplementation(libs.kaspresso)
-//    testImplementation(libs.composekakao)
 // Дополнительные зависимости для тестирования
     androidTestImplementation(libs.androidx.junit.v115)
     androidTestImplementation(libs.androidx.espresso.core.v370)
@@ -141,8 +134,12 @@ dependencies {
 
     androidTestImplementation(libs.hamcrest)
 
-//    androidTestImplementation(libs.androidXTestRunner)
-//    androidTestImplementation(libs.composeUiTestJunit)
+    // WorkManager
+    implementation(libs.androidx.work.runtime.ktx)
+    // Compose Glance для виджетов
+    implementation(libs.androidx.glance)
+    implementation(libs.androidx.glance.appwidget)
+
 
 
 }
