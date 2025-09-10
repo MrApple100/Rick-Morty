@@ -10,6 +10,7 @@ composekakao = "1.0.0"
 composeShimmer = "1.3.3"
 converterGson = "2.11.0"
 coreSplashscreen = "1.0.1"
+coreTesting = "2.2.0"
 espressoCoreVersion = "3.7.0"
 firebaseAnalytics = "23.0.0"
 firebaseBomVersion = "34.2.0"
@@ -28,18 +29,21 @@ junitVersion = "1.3.0"
 espressoCore = "3.5.1"
 appcompat = "1.7.0"
 kotlinxCoroutinesAndroid = "1.7.1"
+kotlinxCoroutinesTest = "1.10.2"
 kotlinxSerializationJson = "1.7.0"
 lifecycleRuntimeKtx = "2.7.0"
 loggingInterceptor = "4.9.3"
 lottieCompose = "5.2.0"
 material = "1.12.0"
 materialVersion = "1.3.2"
+mockk = "1.14.5"
 multidex = "2.0.1"
 orbitCore = "4.6.0"
 orchestrator = "1.6.1"
 paletteKtx = "1.0.0"
 roomRuntime = "2.7.2"
 squareupRetrofitVersion = "2.11.0"
+turbine = "1.2.1"
 ui = "1.7.0"
 navigation_compose_version = "2.7.7"
 constraintlayoutCompose = "1.1.1"
@@ -58,6 +62,7 @@ androidx-compose-animation = { module = "androidx.compose.animation:animation" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
 androidx-espresso-core-v370 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltNavigationCompose" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
@@ -97,16 +102,19 @@ kaspresso-compose-support = { module = "com.kaspersky.android-components:kaspres
 kaspresso-compose-support-v153 = { module = "com.kaspersky.android-components:kaspresso-compose-support", version.ref = "kaspressoComposeSupportVersion" }
 kaspresso-v153 = { module = "com.kaspersky.android-components:kaspresso", version.ref = "kaspressoVersion" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 orbit-compose = { module = "org.orbit-mvi:orbit-compose", version.ref = "orbitCore" }
 orbit-core = { module = "org.orbit-mvi:orbit-core", version.ref = "orbitCore" }
 orbit-test = { module = "org.orbit-mvi:orbit-test", version.ref = "orbitCore" }
 orbit-viewmodel = { module = "org.orbit-mvi:orbit-viewmodel", version.ref = "orbitCore" }
 androidx-navigation = {module = "androidx.navigation:navigation-compose", version.ref = "navigation_compose_version"}
 androidx-constraintlayout-compose-android = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayoutCompose" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 
 [plugins]

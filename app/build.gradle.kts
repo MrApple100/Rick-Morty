@@ -115,8 +115,12 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
 
-//    testImplementation(libs.junit)
-//    testImplementation(libs.androidx.junit)
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.turbine) // Для тестирования Flow
+
 //    testImplementation(libs.androidx.espresso.core)
 //
 //    testImplementation(libs.android.devices.kaspresso)
