@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -75,9 +76,22 @@ class CharacterListViewModel @Inject constructor(
     }
 
     fun searchCharacter(searchText: String) {
+        val handler = CoroutineExceptionHandler { _, exception ->
+            intent {
+                reduce {
+                    state.copy(
+                        status = UiStatus.Failed("Not Found"),
+                        detailsList = emptyList()
+                    )
+                }
+            }
+        }
         intent {
+
             searchJob?.cancel()
-            searchJob = viewModelScope.launch(Dispatchers.IO) {
+            searchJob = viewModelScope.launch(Dispatchers.IO + handler) {
+                _isDataLoadEnd.value = false
+
                 reduce {
                     state.copy(
                         status = UiStatus.Loading,
@@ -86,7 +100,9 @@ class CharacterListViewModel @Inject constructor(
                     )
                 }
 
+
                 searchCharacterByNameUseCase(state.searchText).collect { details ->
+
                     delay(1000)
 
                     if (!details.isNullOrEmpty()) {

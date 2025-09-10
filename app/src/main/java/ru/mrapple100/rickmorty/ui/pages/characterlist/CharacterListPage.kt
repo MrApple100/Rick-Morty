@@ -18,6 +18,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,6 +47,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -53,6 +56,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.requestFocus
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.flow.debounce
@@ -156,6 +162,8 @@ fun CharacterListPage(
     )
 
     Scaffold(
+        modifier = Modifier
+            .testTag("my_compose_screen"),
         topBar = {
             with(sharedTransitionScope) {
                 Column(modifier = Modifier
@@ -165,7 +173,6 @@ fun CharacterListPage(
                             .fillMaxWidth()
                             .height(currentTopBarHeight)
                             .graphicsLayer {
-                                // Плавное движение вверх и исчезновение
                                 translationY = -currentScrollProgressMaxMinOnly * titleHeightPx
                             }
                             .statusBarsPadding()
@@ -174,12 +181,9 @@ fun CharacterListPage(
                             TopBar(
                                 content = null,
                                 modifier = Modifier
+                                    .testTag("TopBar")
                                     .fillMaxWidth()
                                     .wrapContentHeight()
-//                                    .graphicsLayer {
-//                                        // Плавное движение вверх и исчезновение
-//                                        translationY = -scrollProgress * titleHeightPx
-//                                    }
                                     .sharedElement(
                                         sharedContentState = sharedTransitionScope.rememberSharedContentState(
                                             key = "topBar"
@@ -197,10 +201,13 @@ fun CharacterListPage(
                                     )
                             )
                         }
+                            val focusRequester = remember { FocusRequester() }
                             SearchBar(
                                 searchText = state.searchText,
                                 onChangedSearchText = { onSearchCharacter(it) },
                                 modifier = Modifier
+                                    .focusRequester(focusRequester)
+                                    .focusable()
                                     .fillMaxWidth()
                                     .padding(8.dp)
                                     .height(60.dp)
@@ -253,6 +260,7 @@ fun CharacterListPage(
 
                             LazyColumn(
                                 modifier = Modifier
+                                    .testTag("LazyList")
                                     .fillMaxSize(),
                                 state = lazyListState
                             ) {

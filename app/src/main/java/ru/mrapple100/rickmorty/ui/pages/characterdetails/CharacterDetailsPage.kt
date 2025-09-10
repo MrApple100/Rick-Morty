@@ -15,6 +15,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -48,7 +49,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -74,6 +78,7 @@ import ru.mrapple100.rickmorty.LocalSharedTransitionScope
 import ru.mrapple100.rickmorty.R
 import ru.mrapple100.rickmorty.ui.components.firebase_analytics.BlockFirebaseAnalytics
 import ru.mrapple100.rickmorty.ui.components.molecules.TopBar
+import ru.mrapple100.rickmorty.ui.utils.calcDominantColor
 import java.util.Locale
 
 fun <T> spatialExpressiveSpring() = spring<T>(
@@ -100,6 +105,11 @@ fun CharacterDetailsPage(
     onBackNavigate: () -> Unit
 ) {
     BlockFirebaseAnalytics("CharacterDetailsPage ${state.detailsCharacter.id} - ${state.detailsCharacter.name}")
+
+
+    val darkLightSheme = isSystemInDarkTheme()
+    val backgroundDefault = MaterialTheme.colorScheme.background
+    var backgroundColor by remember { mutableStateOf(backgroundDefault) }
 
     val sharedTransitionScope = LocalSharedTransitionScope.current!!
     val animatedContentScope = LocalAnimatedVisibilityScope.current!!
@@ -134,6 +144,7 @@ fun CharacterDetailsPage(
             content = {
                 Column(
                     modifier = Modifier
+                        .background(backgroundColor)
                         .fillMaxSize()
                         .padding(it),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -201,7 +212,15 @@ fun CharacterDetailsPage(
                                     .placeholderMemoryCacheKey("image-${state.detailsCharacter.id}")
                                     .build(),
                                 onLoading = {},
-                                onSuccess = {},
+                                onSuccess = { success ->
+                                    calcDominantColor(success.result.drawable) { lightC, darkC ->
+                                        backgroundColor = if (darkLightSheme) {
+                                            darkC
+                                        } else {
+                                            lightC
+                                        }
+                                    }
+                                },
                                 onError = {},
                                 contentDescription = null,
                             )
